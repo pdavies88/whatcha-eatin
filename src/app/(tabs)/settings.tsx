@@ -1,12 +1,14 @@
+import Constants from 'expo-constants';
 import { Link } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Linking, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { APP_NAME, PRIVACY_POLICY_URL, SUPPORT_EMAIL, SUPPORT_URL } from '@/constants/brand';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { modelFor, useSettings } from '@/context/settings-context';
 import { useTheme } from '@/hooks/use-theme';
@@ -48,6 +50,8 @@ export default function SettingsScreen() {
             Everything stays on this phone. API keys are stored in the device keychain and are only sent to
             the provider you choose. Photos go straight from this phone to that provider for analysis.
           </ThemedText>
+
+          <AboutSection />
         </ScrollView>
       </SafeAreaView>
     </ThemedView>
@@ -194,6 +198,41 @@ function ProviderSettings({ providerId }: { providerId: ProviderId }) {
         </>
       </Section>
     </>
+  );
+}
+
+function AboutSection() {
+  const version = Constants.expoConfig?.version ?? '';
+  return (
+    <Section title="About">
+      <LinkRow title="Privacy policy" onPress={() => WebBrowser.openBrowserAsync(PRIVACY_POLICY_URL)} />
+      <LinkRow title="Help and support" onPress={() => WebBrowser.openBrowserAsync(SUPPORT_URL)} />
+      <LinkRow title="Contact" subtitle={SUPPORT_EMAIL} onPress={() => Linking.openURL(`mailto:${SUPPORT_EMAIL}`)} />
+      <ThemedText type="small" themeColor="textSecondary">
+        {APP_NAME} {version}. Calorie and macro numbers are AI estimates and can be wrong by 20% or more. They are
+        not medical advice.
+      </ThemedText>
+    </Section>
+  );
+}
+
+function LinkRow({ title, subtitle, onPress }: { title: string; subtitle?: string; onPress: () => void }) {
+  return (
+    <Pressable accessibilityRole="link" onPress={onPress}>
+      {({ pressed }) => (
+        <ThemedView type="backgroundElement" style={[styles.option, { borderColor: 'transparent', opacity: pressed ? 0.7 : 1 }]}>
+          <View style={styles.flex}>
+            <ThemedText type="smallBold">{title}</ThemedText>
+            {subtitle ? (
+              <ThemedText type="small" themeColor="textSecondary">
+                {subtitle}
+              </ThemedText>
+            ) : null}
+          </View>
+          <ThemedText themeColor="textSecondary">›</ThemedText>
+        </ThemedView>
+      )}
+    </Pressable>
   );
 }
 

@@ -11,7 +11,7 @@ import { NutritionDetails } from '@/components/nutrition-details';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { APP_NAME, APP_TAGLINE } from '@/constants/brand';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { BottomTabInset, DisplayFont, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useMealHistory } from '@/context/meal-history-context';
 import { useSettings } from '@/context/settings-context';
 import { useFoodAnalysis, type PickedPhoto } from '@/hooks/use-food-analysis';
@@ -197,7 +197,7 @@ function SetupCard() {
     <ThemedView type="backgroundElement" style={styles.setupCard}>
       <ThemedText type="smallBold">Add an AI key to get started</ThemedText>
       <ThemedText type="small" themeColor="textSecondary">
-        Seven Plates uses your own AI key, so there are no accounts or subscriptions. A Gemini key from Google is
+        {APP_NAME} uses your own AI key, so there are no accounts or subscriptions. A Gemini key from Google is
         free and takes about a minute to create.
       </ThemedText>
       <Link href="/gemini-key" asChild>
@@ -230,10 +230,10 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.two,
   },
   appName: {
-    fontSize: 34,
-    lineHeight: 40,
-    fontWeight: 800,
-    letterSpacing: -0.5,
+    fontSize: 40,
+    lineHeight: 48,
+    fontFamily: DisplayFont.bold,
+    fontWeight: 'normal',
   },
   tagline: {
     textAlign: 'center',

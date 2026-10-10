@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { DisplayFont, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import type { Macros } from '@/lib/nutrition/schema';
 
@@ -91,8 +91,9 @@ const styles = StyleSheet.create({
   },
   calories: {
     fontSize: 44,
-    lineHeight: 50,
-    fontWeight: 700,
+    lineHeight: 52,
+    fontFamily: DisplayFont.semiBold,
+    fontWeight: 'normal',
     fontVariant: ['tabular-nums'],
   },
   bar: {

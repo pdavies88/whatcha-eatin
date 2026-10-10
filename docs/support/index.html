@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Support – Whatcha Eatin'</title>
+    <meta name="description" content="Help and answers for Whatcha Eatin'." />
+    <link rel="icon" href="../favicon.png" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <a href="../"><img src="../logo.png" alt="" /></a>
+        <a href="../" class="brand">Whatcha Eatin'</a>
+      </header>
+
+      <h1>Support</h1>
+      <p>Need help? Email <a href="mailto:preston5@protonmail.com">preston5@protonmail.com</a>. I usually reply within a few days. The answers below cover the most common questions.</p>
+
+      <h2>How do I get started?</h2>
+      <p>Whatcha Eatin' uses your own AI key, so there are no accounts or subscriptions. The easiest option is a free Google Gemini key:</p>
+      <ol>
+        <li>Open <a href="https://aistudio.google.com/apikey">Google AI Studio</a> and sign in with any Google account.</li>
+        <li>Tap <strong>Create API key</strong>. If Google asks for a project, let it create a new one.</li>
+        <li>Copy the new key.</li>
+        <li>In the app, open <strong>Settings → Google Gemini</strong>, paste the key and tap <strong>Save key</strong>.</li>
+      </ol>
+      <p>The app's Scan tab also walks you through these steps the first time you open it.</p>
+
+      <h2>Which AI providers can I use?</h2>
+      <p>Google Gemini, OpenAI, Anthropic, xAI and OpenRouter. Gemini is the only one with a free tier. The others bill your own account with them. You can switch providers and models at any time in Settings.</p>
+
+      <h2>The app says my key was rejected</h2>
+      <ul>
+        <li>Check that you copied the whole key, with no spaces at the start or end.</li>
+        <li>For Gemini, create a new key in Google AI Studio. Google rejects some older, unrestricted Google Cloud keys.</li>
+        <li>For paid providers, check that your account has billing set up and available credit.</li>
+      </ul>
+
+      <h2>The app says the provider is rate limiting requests</h2>
+      <p>Free Gemini keys allow a limited number of requests per minute and per day. Wait a minute and try again. If it keeps happening, try again tomorrow, choose a different Gemini model in Settings, or turn on billing for your Google project.</p>
+
+      <h2>The app says the model doesn't exist or doesn't support images</h2>
+      <p>Providers retire old models from time to time. Open Settings, tap <strong>Load all models from provider</strong>, and pick a current model.</p>
+
+      <h2>How accurate are the numbers?</h2>
+      <p>They are AI estimates from a single photo, so they can be off by 20% or more. Adding notes such as "cooked in olive oil" or "large bowl" helps. Use the numbers as a guide, not as medical advice.</p>
+
+      <h2>Where is my data stored?</h2>
+      <p>Everything stays on your phone. The app keeps the last seven days of meals and deletes older meals automatically. Photos are only sent to the AI provider you choose, at the moment you analyze them. The <a href="../privacy/">privacy policy</a> has the details.</p>
+
+      <h2>How do I delete my data?</h2>
+      <ul>
+        <li>To delete one meal, open it from the Week tab and tap <strong>Delete meal</strong>.</li>
+        <li>To delete an API key, open Settings, select the provider, and tap <strong>Remove</strong>.</li>
+        <li>To delete everything, remove your API keys in Settings and then delete the app.</li>
+      </ul>
+
+      <footer>
+        <a href="../">Home</a>
+        <a href="../privacy/">Privacy Policy</a>
+      </footer>
+    </main>
+  </body>
+</html>

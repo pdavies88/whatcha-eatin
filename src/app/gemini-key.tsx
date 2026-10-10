@@ -6,6 +6,7 @@ import { Alert, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { Button } from '@/components/button';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { APP_NAME } from '@/constants/brand';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useSettings } from '@/context/settings-context';
 import { useTheme } from '@/hooks/use-theme';
@@ -57,7 +58,7 @@ export default function GeminiKeyScreen() {
         automaticallyAdjustKeyboardInsets
         keyboardShouldPersistTaps="handled">
         <ThemedText themeColor="textSecondary">
-          Seven Plates has no servers and no accounts. You bring your own AI key. Google gives Gemini keys away
+          {APP_NAME} has no servers and no accounts. You bring your own AI key. Google gives Gemini keys away
           for free, with daily limits that are plenty for logging meals. No credit card is needed.
         </ThemedText>
 

@@ -1,7 +1,7 @@
 import { ActivityIndicator, Pressable, StyleSheet, type PressableProps } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { Spacing } from '@/constants/theme';
+import { DisplayFont, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 type ButtonProps = Omit<PressableProps, 'children'> & {
@@ -47,6 +47,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   label: {
-    fontWeight: 600,
+    fontFamily: DisplayFont.semiBold,
+    fontWeight: 'normal',
+    fontSize: 17,
   },
 });

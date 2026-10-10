@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { formatGrams, MacroSummary } from '@/components/macro-summary';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { DisplayFont, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import type { NutritionAnalysis } from '@/lib/nutrition/schema';
 
@@ -74,9 +74,10 @@ const styles = StyleSheet.create({
     gap: Spacing.half,
   },
   mealName: {
-    fontSize: 24,
-    lineHeight: 30,
-    fontWeight: 700,
+    fontSize: 26,
+    lineHeight: 32,
+    fontFamily: DisplayFont.semiBold,
+    fontWeight: 'normal',
   },
   card: {
     borderRadius: Spacing.four,

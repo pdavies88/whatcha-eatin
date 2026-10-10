@@ -14,14 +14,14 @@ export const Colors = {
     backgroundElement: '#F0F0F3',
     backgroundSelected: '#E0E1E6',
     textSecondary: '#60646C',
-    tint: '#16A34A',
+    tint: '#C9401F',
     onTint: '#ffffff',
     danger: '#DC2626',
     border: '#E0E1E6',
     protein: '#2563EB',
     carbs: '#D97706',
     fat: '#DB2777',
-    heroBackground: '#ECFDF3',
+    heroBackground: '#FFF1E4',
   },
   dark: {
     text: '#ffffff',
@@ -29,14 +29,14 @@ export const Colors = {
     backgroundElement: '#212225',
     backgroundSelected: '#2E3135',
     textSecondary: '#B0B4BA',
-    tint: '#22C55E',
-    onTint: '#04210F',
+    tint: '#FF8A65',
+    onTint: '#2A0E05',
     danger: '#F87171',
     border: '#2E3135',
     protein: '#60A5FA',
     carbs: '#FBBF24',
     fat: '#F472B6',
-    heroBackground: '#06301A',
+    heroBackground: '#2B1720',
   },
 } as const;
 
@@ -66,6 +66,16 @@ export const Fonts = Platform.select({
     mono: 'var(--font-mono)',
   },
 });
+
+/**
+ * Fredoka gives headings and buttons a rounded, playful look. Body text stays in the system
+ * font for legibility. Each weight is its own family, so don't combine these with fontWeight.
+ */
+export const DisplayFont = {
+  medium: 'Fredoka_500Medium',
+  semiBold: 'Fredoka_600SemiBold',
+  bold: 'Fredoka_700Bold',
+} as const;
 
 export const Spacing = {
   half: 2,
