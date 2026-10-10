@@ -90,6 +90,11 @@ export default function GeminiKeyScreen() {
           autoCapitalize="none"
           autoCorrect={false}
           textContentType="none"
+          // The Save button can sit behind the keyboard, so Return saves too.
+          returnKeyType="done"
+          onSubmitEditing={() => {
+            if (key.trim() && !isSaving) void save();
+          }}
           style={[styles.input, { color: theme.text, backgroundColor: theme.backgroundElement }]}
           accessibilityLabel="Gemini API key"
         />

@@ -7,7 +7,7 @@ Snap a photo of your meal. A vision model estimates the calories and macros. You
 - **A rolling week.** The Week tab shows a 7-day calendar with daily totals. When a new day starts, the meals from eight days ago are deleted. On Monday, for example, the previous Monday's meals are removed.
 - **On-device only.** Keys are stored in the iOS Keychain. Meals live in on-device SQLite storage and photos in the app's documents folder. Photos go straight from the phone to the provider you choose.
 
-Website, privacy policy and support: https://pdavies88.github.io/calorie-macro-helper/
+Website, privacy policy and support: https://pdavies88.github.io/whatcha-eatin/
 
 Built with Expo SDK 57, React Native 0.86 (New Architecture), Expo Router, the React Compiler, and TypeScript.
 

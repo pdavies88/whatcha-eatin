@@ -9,7 +9,7 @@ Everything App Store Connect asks for, ready to paste. Fill these in under **App
 - [ ] Repo is public and GitHub Pages is serving `docs/`. Check that both URLs below open.
 - [ ] A TestFlight build installs and works on your iPhone.
 - [ ] App information, pricing and the version page are filled in from this file.
-- [ ] Screenshots are uploaded. See [Screenshots](#screenshots).
+- [ ] Screenshots from `store/screenshots/` are uploaded. See [Screenshots](#screenshots).
 - [ ] App Privacy questionnaire is answered. See [App Privacy](#app-privacy-questionnaire).
 - [ ] Age rating questionnaire is answered.
 - [ ] App Review notes include a working Gemini key. See [App Review information](#app-review-information).
@@ -19,9 +19,9 @@ Everything App Store Connect asks for, ready to paste. Fill these in under **App
 
 | Field | Value |
 | --- | --- |
-| Privacy Policy URL | https://pdavies88.github.io/calorie-macro-helper/privacy/ |
-| Support URL | https://pdavies88.github.io/calorie-macro-helper/support/ |
-| Marketing URL (optional) | https://pdavies88.github.io/calorie-macro-helper/ |
+| Privacy Policy URL | https://pdavies88.github.io/whatcha-eatin/privacy/ |
+| Support URL | https://pdavies88.github.io/whatcha-eatin/support/ |
+| Marketing URL (optional) | https://pdavies88.github.io/whatcha-eatin/ |
 
 The app links to the same privacy policy and support page from **Settings → About**. Apple requires the privacy policy to be reachable inside the app.
 
@@ -145,15 +145,19 @@ Gemini's free tier allows a limited number of requests per day. Leave the key ac
 
 ## Screenshots
 
-App Store Connect lists the required iPhone sizes on the version page. Currently that means the 6.9-inch display, at 1320 × 2868 or 1290 × 2796 pixels. Suggested set:
+Ready to upload, in [`screenshots/`](screenshots/). All are 1320 × 2868 pixels, the 6.9-inch iPhone size, captured from the iPhone 18 Pro Max simulator with a clean 9:41 status bar. Upload them in this order:
 
-1. Scan tab with the hero and logo
-2. A meal result with the calorie and macro breakdown
-3. The Week calendar with a few days logged
-4. The Gemini key guide, showing there's no account to create
-5. Settings with the provider list
+1. `01-scan.png`: Scan tab with the logo, hero and camera buttons
+2. `02-meal-result.png`: a meal's photo with its calorie and macro breakdown
+3. `03-week.png`: the Week calendar with daily totals and today's meals
+4. `04-gemini-key-guide.png`: the free Gemini key guide
+5. `05-settings.png`: AI provider choices in Settings
 
-The iPhone 18 Pro Max simulator produces screenshots at the right size. Run the app there, then use **File → Save Screen** in Simulator, or run `xcrun simctl io booted screenshot shot.png`.
+`extra-first-launch.png` shows the first-launch screen asking for a key. Swap it in for one of the five if you prefer.
+
+The meal photos come from Unsplash under its free license. See [`screenshots/CREDITS.md`](screenshots/CREDITS.md). The meals and numbers are sample data loaded straight into the simulator app's storage, not live AI results.
+
+To retake them later, run the app on the iPhone 18 Pro Max simulator, set the status bar with `xcrun simctl status_bar booted override --time 9:41 --batteryState discharging --batteryLevel 100`, and save each screen with `xcrun simctl io booted screenshot <file>.png`. Save the files outside the project folder while Metro is running. A new file in the project makes Metro reload the app mid-capture.
 
 ## After approval
 

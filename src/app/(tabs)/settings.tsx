@@ -123,6 +123,11 @@ function ProviderSettings({ providerId }: { providerId: ProviderId }) {
             autoCapitalize="none"
             autoCorrect={false}
             textContentType="none"
+            // The Save button can sit behind the keyboard, so Return saves too.
+            returnKeyType="done"
+            onSubmitEditing={() => {
+              if (keyDraft.trim() && !isSavingKey) void handleSaveKey(keyDraft);
+            }}
             style={inputStyle}
             accessibilityLabel={`${provider.name} API key`}
           />
