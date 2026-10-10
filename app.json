@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Calorie Macro Helper",
+    "name": "Seven Plates",
     "slug": "calorie-macro-helper",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -22,7 +22,7 @@
       "package": "com.pdavies.caloriemacrohelper"
     },
     "web": {
-      "output": "server",
+      "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [

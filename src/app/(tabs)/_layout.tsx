@@ -18,9 +18,9 @@ export default function TabLayout() {
         <NativeTabs.Trigger.Icon sf={{ default: 'camera', selected: 'camera.fill' }} md="photo_camera" />
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="history">
-        <NativeTabs.Trigger.Label>History</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf="list.bullet.rectangle" md="history" />
+      <NativeTabs.Trigger name="week">
+        <NativeTabs.Trigger.Label>Week</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="calendar" md="calendar_month" />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="settings">

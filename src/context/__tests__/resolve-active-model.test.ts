@@ -6,28 +6,23 @@ jest.mock('expo-secure-store', () => ({}));
 jest.mock('expo-sqlite/kv-store', () => ({}));
 
 describe('resolveActiveModel', () => {
-  it('uses the free provider by default', () => {
-    expect(resolveActiveModel({ providerId: 'free', models: {} }, {})).toEqual({
-      providerId: 'free',
-      model: 'default',
-      isFallback: false,
+  it('returns null until the selected provider has a key', () => {
+    expect(resolveActiveModel({ providerId: 'gemini', models: {} }, {})).toBeNull();
+    expect(resolveActiveModel({ providerId: 'openai', models: {} }, { gemini: true })).toBeNull();
+  });
+
+  it('uses the provider default model when none is saved', () => {
+    expect(resolveActiveModel({ providerId: 'gemini', models: {} }, { gemini: true })).toEqual({
+      providerId: 'gemini',
+      model: 'gemini-3.5-flash-lite',
     });
   });
 
-  it('uses the preferred provider and its saved model when a key exists', () => {
+  it('uses the saved model for the selected provider', () => {
     const settings = { providerId: 'anthropic' as const, models: { anthropic: 'claude-opus-5-5' } };
     expect(resolveActiveModel(settings, { anthropic: true })).toEqual({
       providerId: 'anthropic',
       model: 'claude-opus-5-5',
-      isFallback: false,
-    });
-  });
-
-  it('falls back to the free provider when the preferred provider has no key', () => {
-    expect(resolveActiveModel({ providerId: 'openai', models: {} }, { openai: false })).toEqual({
-      providerId: 'free',
-      model: 'default',
-      isFallback: true,
     });
   });
 });

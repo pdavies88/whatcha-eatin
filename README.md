@@ -1,34 +1,47 @@
-# Calorie Macro Helper
+# Seven Plates
 
-Take a photo of your food. A vision model estimates the calories and macros.
+Snap a photo of your meal. A vision model estimates the calories and macros. Your last seven days of meals stay on your phone, then they are cleared automatically.
 
-- **Bring your own key:** OpenAI, Anthropic, Google Gemini, xAI, or OpenRouter. Pick any model, load the provider's live model list, or enter a model ID yourself.
-- **Free by default:** with no key, photos go to a free-tier Gemini model through the app's own API route. The server's key is never shipped in the app.
-- **History:** saved meals and a running total for today.
+- **Bring your own key.** Supported providers are Google Gemini, OpenAI, Anthropic, xAI and OpenRouter. There are no accounts, servers or paid tiers.
+- **Free with Gemini.** Google gives Gemini API keys away for free. The app has a step-by-step guide for creating one.
+- **A rolling week.** The Week tab shows a 7-day calendar with daily totals. When a new day starts, the meals from eight days ago are deleted. On Monday, for example, the previous Monday's meals are removed.
+- **On-device only.** Keys are stored in the iOS Keychain. Meals live in on-device SQLite storage and photos in the app's documents folder. Photos go straight from the phone to the provider you choose.
 
 Built with Expo SDK 57, React Native 0.86 (New Architecture), Expo Router, the React Compiler, and TypeScript.
 
 ## Getting started
 
-Requirements: Node 24 LTS, Xcode with an iOS Simulator, and CocoaPods.
+Requirements: Node 24 LTS. For simulator builds you also need Xcode and CocoaPods.
 
 ```bash
 npm install
-cp .env.example .env.local   # then add FREE_GEMINI_API_KEY
-npx expo run:ios             # builds the native app and starts Metro
+npx expo start --go       # scan the QR code with your iPhone's Camera app to open in Expo Go
 ```
 
-The app needs a development build (`expo run:ios`), not Expo Go, because it uses native modules.
+Your phone and Mac must be on the same Wi-Fi network. If the phone can't connect, use `npx expo start --go --tunnel`.
 
-You can only pick photos from the library in the Simulator, because it has no camera. Use a real device to take photos.
+To run a development build on the iOS Simulator instead:
+
+```bash
+npx expo run:ios
+```
+
+### Getting a free Gemini key
+
+1. Open [Google AI Studio](https://aistudio.google.com/apikey) and sign in with any Google account.
+2. Tap **Create API key**. If Google asks for a project, let it create a new one.
+3. Copy the key. Create a fresh key instead of reusing an old Google Cloud key, because Google rejects older unrestricted keys.
+4. In the app, open **Settings → Google Gemini**, paste the key and save. The Scan tab also links to this guide on first launch.
+
+On the free tier, Google's terms let it use what you send to improve its products.
 
 ## Scripts
 
-| Command             | Purpose                   |
-| ------------------- | ------------------------- |
-| `npm start`         | Start Metro               |
-| `npm test`          | Unit tests (jest-expo)    |
-| `npm run typecheck` | TypeScript                |
+| Command             | Purpose                     |
+| ------------------- | --------------------------- |
+| `npm start`         | Start Metro                 |
+| `npm test`          | Unit tests (jest-expo)      |
+| `npm run typecheck` | TypeScript                  |
 | `npm run lint`      | ESLint (eslint-config-expo) |
 
 ## How it works
@@ -36,30 +49,23 @@ You can only pick photos from the library in the Simulator, because it has no ca
 ```
 src/
   app/                    Expo Router routes
-    (tabs)/               Scan, History, Settings (native tabs)
+    (tabs)/               Scan, Week, Settings (native tabs)
     meal/[id].tsx         Meal detail
-    api/analyze+api.ts    Server route for the free provider
+    gemini-key.tsx        Guide for creating a free Gemini key
+  components/brand/       Logo mark, food shapes, and the animated hero
   lib/
     ai/providers.ts       Provider registry and suggested models
     ai/adapters.ts        Pure request builders and response parsers, one per provider
-    ai/analyze.ts         Client entry point: picks the key and adapter, or calls the free route
-    ai/request.ts         Shared fetch, error mapping, and parsing (safe on the server)
+    ai/analyze.ts         Reads the saved key and calls the selected provider
     nutrition/            Zod schema, JSON Schema for structured output, prompt, parsing
-    storage/              API keys (SecureStore/Keychain), settings and history (SQLite kv-store)
-    image.ts              Resize to 1024px JPEG; persist photos for history
+    storage/              API keys (SecureStore), settings and meals (SQLite kv-store)
+    week.ts               7-day retention window and calendar day math
+    image.ts              Resize to 1024px JPEG; store and clean up meal photos
   context/                Settings and meal history providers
+plugins/
+  with-ios-scene-lifecycle.js   Adopts the UIScene life cycle required by the iOS 27 SDK
 ```
 
-- Every provider uses structured JSON output, and the response is validated with Zod. When validation fails the app shows a clear error, not wrong numbers.
-- API keys live in the iOS Keychain (`WHEN_UNLOCKED_THIS_DEVICE_ONLY`). Each key goes only to its own provider.
-- If you pick a provider with no saved key, the app falls back to the free model and says so on the Scan screen.
-
-## Deploying the free model
-
-The free provider is an [Expo Router API route](https://docs.expo.dev/router/web/api-routes/). It runs on the Metro dev server during development. For a production build:
-
-1. Deploy the server with [EAS Hosting](https://docs.expo.dev/eas/hosting/get-started/): `npx expo export --platform web && npx eas-cli@latest deploy`.
-2. Set `FREE_GEMINI_API_KEY` as an EAS Hosting environment variable.
-3. Set the deployed URL as the router origin in `app.json`: `["expo-router", { "origin": "https://your-app.expo.app" }]`.
-
-Gemini's free tier has rate limits. Before a public launch, add per-device rate limiting to the route.
+- Every provider returns structured JSON. The app checks it against a Zod schema. When the check fails, the app shows an error instead of wrong numbers.
+- The app deletes expired meals and their photos at launch, when it returns to the foreground, and when you save a meal.
+- `plugins/with-ios-scene-lifecycle.js` copies the Expo SDK 58 template. Remove it after upgrading to SDK 58.

@@ -1,12 +1,11 @@
-// Platform-neutral request helpers. Imported by both the app and the server API route,
-// so this module must not depend on native modules.
+// Request helpers kept free of native modules so they can be unit tested.
 import { NutritionParseError, parseNutritionResponse } from '@/lib/nutrition/parse';
 import type { NutritionAnalysis } from '@/lib/nutrition/schema';
 
 import type { ProviderAdapter } from './adapters';
 import { AnalysisError, errorForStatus, providerErrorMessage } from './errors';
 
-/** Runs a single analysis through a provider adapter. Shared by the app and the free API route. */
+/** Runs a single analysis through a provider adapter. */
 export async function analyzeWithAdapter(
   adapter: ProviderAdapter,
   providerName: string,

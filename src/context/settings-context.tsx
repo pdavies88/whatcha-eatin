@@ -9,15 +9,16 @@ type ApiKeyState = Partial<Record<ProviderId, boolean>>;
 export type ActiveModel = {
   providerId: ProviderId;
   model: string;
-  /** True when the preferred provider has no key and the free provider is used instead. */
-  isFallback: boolean;
 };
 
 type SettingsContextValue = {
   settings: Settings;
   /** Which providers have a stored key. Keys themselves are only read when making a request. */
   hasApiKey: ApiKeyState;
-  activeModel: ActiveModel;
+  /** False until the keychain has been checked, so screens don't flash the setup prompt. */
+  keysLoaded: boolean;
+  /** The provider and model to use, or null when the selected provider has no key yet. */
+  activeModel: ActiveModel | null;
   selectProvider: (providerId: ProviderId) => void;
   selectModel: (providerId: ProviderId, model: string) => void;
   saveApiKey: (providerId: ProviderId, key: string) => Promise<void>;
@@ -29,26 +30,26 @@ export function modelFor(settings: Settings, providerId: ProviderId): string {
   return settings.models[providerId] ?? PROVIDERS[providerId].defaultModel;
 }
 
-export function resolveActiveModel(settings: Settings, hasApiKey: ApiKeyState): ActiveModel {
-  const preferred = PROVIDERS[settings.providerId];
-  if (!preferred.requiresKey || hasApiKey[settings.providerId]) {
-    return { providerId: settings.providerId, model: modelFor(settings, settings.providerId), isFallback: false };
-  }
-  return { providerId: 'free', model: modelFor(settings, 'free'), isFallback: true };
+export function resolveActiveModel(settings: Settings, hasApiKey: ApiKeyState): ActiveModel | null {
+  if (!hasApiKey[settings.providerId]) return null;
+  return { providerId: settings.providerId, model: modelFor(settings, settings.providerId) };
 }
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   // Settings are read synchronously so the first render already reflects the user's choice.
   const [settings, setSettings] = useState(loadSettings);
   const [hasApiKey, setHasApiKey] = useState<ApiKeyState>({});
+  const [keysLoaded, setKeysLoaded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all(
-      PROVIDER_IDS.map(async (id) => [id, Boolean(await getApiKey(id))] as const),
-    ).then((entries) => {
-      if (!cancelled) setHasApiKey(Object.fromEntries(entries));
-    });
+    Promise.all(PROVIDER_IDS.map(async (id) => [id, Boolean(await getApiKey(id))] as const)).then(
+      (entries) => {
+        if (cancelled) return;
+        setHasApiKey(Object.fromEntries(entries));
+        setKeysLoaded(true);
+      },
+    );
     return () => {
       cancelled = true;
     };
@@ -65,6 +66,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const value: SettingsContextValue = {
     settings,
     hasApiKey,
+    keysLoaded,
     activeModel: resolveActiveModel(settings, hasApiKey),
     selectProvider: (providerId) => updateSettings((previous) => ({ ...previous, providerId })),
     selectModel: (providerId, model) =>

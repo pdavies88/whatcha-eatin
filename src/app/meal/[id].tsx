@@ -8,6 +8,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useMealHistory } from '@/context/meal-history-context';
+import { mealPhotoUri } from '@/lib/image';
 
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
 
@@ -25,7 +26,7 @@ export default function MealDetailScreen() {
   }
 
   const confirmDelete = () => {
-    Alert.alert('Delete meal?', 'This removes the meal and its photo from your history.', [
+    Alert.alert('Delete meal?', 'This removes the meal and its photo from this phone.', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete',
@@ -42,7 +43,7 @@ export default function MealDetailScreen() {
     <ThemedView style={styles.container}>
       <Stack.Screen options={{ title: meal.analysis.meal_name }} />
       <ScrollView contentContainerStyle={styles.content} contentInsetAdjustmentBehavior="automatic">
-        <Image source={{ uri: meal.photoUri }} style={styles.photo} contentFit="cover" />
+        <Image source={{ uri: mealPhotoUri(meal.photoFile) }} style={styles.photo} contentFit="cover" />
         <NutritionDetails analysis={meal.analysis} />
         <ThemedText type="small" themeColor="textSecondary">
           {dateTimeFormatter.format(meal.createdAt)} · {meal.providerName} · {meal.model}

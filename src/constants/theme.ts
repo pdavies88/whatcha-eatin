@@ -21,6 +21,7 @@ export const Colors = {
     protein: '#2563EB',
     carbs: '#D97706',
     fat: '#DB2777',
+    heroBackground: '#ECFDF3',
   },
   dark: {
     text: '#ffffff',
@@ -35,6 +36,7 @@ export const Colors = {
     protein: '#60A5FA',
     carbs: '#FBBF24',
     fat: '#F472B6',
+    heroBackground: '#06301A',
   },
 } as const;
 

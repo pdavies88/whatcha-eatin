@@ -6,7 +6,7 @@ import { DEFAULT_PROVIDER_ID, PROVIDER_IDS } from '@/lib/ai/providers';
 const SETTINGS_KEY = 'settings.v1';
 
 export const SettingsSchema = z.object({
-  /** The provider the user prefers. Falls back to the free provider if it has no API key. */
+  /** The provider used for analysis. It needs a saved API key before photos can be analyzed. */
   providerId: z.enum(PROVIDER_IDS),
   /** Selected model per provider, so switching providers remembers each choice. */
   models: z.partialRecord(z.enum(PROVIDER_IDS), z.string()),

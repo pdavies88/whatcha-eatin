@@ -14,26 +14,10 @@ export type AnalyzeOptions = {
   signal?: AbortSignal;
 };
 
-/** Path of the app's own API route that serves the free, keyless provider. */
-export const FREE_ANALYZE_PATH = '/api/analyze';
-
+/** Sends the photo straight from the device to the user's chosen provider with their own key. */
 export async function analyzeFoodImage(options: AnalyzeOptions): Promise<NutritionAnalysis> {
   const { providerId, model, image, context, signal } = options;
   const provider = PROVIDERS[providerId];
-
-  if (providerId === 'free') {
-    const body = await fetchJson(
-      FREE_ANALYZE_PATH,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image, context }),
-        signal,
-      },
-      provider.name,
-    );
-    return body as NutritionAnalysis;
-  }
 
   const apiKey = await getApiKey(providerId);
   if (!apiKey) {
@@ -44,8 +28,6 @@ export async function analyzeFoodImage(options: AnalyzeOptions): Promise<Nutriti
 }
 
 export async function listProviderModels(providerId: ProviderId, signal?: AbortSignal): Promise<ModelOption[]> {
-  if (providerId === 'free') return PROVIDERS.free.suggestedModels;
-
   const apiKey = await getApiKey(providerId);
   if (!apiKey) {
     throw new AnalysisError('auth', `Add a ${PROVIDERS[providerId].name} API key first.`);

@@ -29,6 +29,11 @@ export function useFoodAnalysis() {
   useEffect(() => () => abortRef.current?.abort(), []);
 
   const analyze = async (photo: PickedPhoto, context?: string) => {
+    if (!activeModel) {
+      setState({ status: 'error', photo, message: 'Add an API key in Settings before analyzing photos.' });
+      return;
+    }
+
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;

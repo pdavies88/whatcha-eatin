@@ -1,3 +1,4 @@
+import { Link } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
@@ -21,6 +22,8 @@ export default function SettingsScreen() {
         <ScrollView
           contentContainerStyle={styles.content}
           keyboardDismissMode="interactive"
+          // Makes room for the iOS keyboard and scrolls the focused input above it.
+          automaticallyAdjustKeyboardInsets
           keyboardShouldPersistTaps="handled">
           <ThemedText type="subtitle">Settings</ThemedText>
 
@@ -29,7 +32,9 @@ export default function SettingsScreen() {
               <OptionRow
                 key={id}
                 title={PROVIDERS[id].name}
-                subtitle={PROVIDERS[id].requiresKey ? (hasApiKey[id] ? 'Key saved' : 'No key') : 'No key needed'}
+                subtitle={[PROVIDERS[id].hasFreeTier ? 'Free tier' : null, hasApiKey[id] ? 'Key saved' : 'No key']
+                  .filter(Boolean)
+                  .join(' · ')}
                 selected={settings.providerId === id}
                 onPress={() => selectProvider(id)}
               />
@@ -40,8 +45,8 @@ export default function SettingsScreen() {
           <ProviderSettings key={settings.providerId} providerId={settings.providerId} />
 
           <ThemedText type="small" themeColor="textSecondary">
-            API keys are stored in the device keychain and are only sent to the provider you choose. Photos
-            are sent to the selected provider for analysis.
+            Everything stays on this phone. API keys are stored in the device keychain and are only sent to
+            the provider you choose. Photos go straight from this phone to that provider for analysis.
           </ThemedText>
         </ScrollView>
       </SafeAreaView>
@@ -104,8 +109,7 @@ function ProviderSettings({ providerId }: { providerId: ProviderId }) {
     <>
       <ThemedText themeColor="textSecondary">{provider.description}</ThemedText>
 
-      {provider.requiresKey ? (
-        <Section title={`${provider.name} API key`}>
+      <Section title={`${provider.name} API key`}>
           <TextInput
             value={keyDraft}
             onChangeText={setKeyDraft}
@@ -136,7 +140,15 @@ function ProviderSettings({ providerId }: { providerId: ProviderId }) {
               />
             ) : null}
           </View>
-          {provider.keyUrl ? (
+          {providerId === 'gemini' ? (
+            <Link href="/gemini-key" asChild>
+              <Pressable accessibilityRole="link">
+                <ThemedText type="small" style={{ color: theme.tint }}>
+                  How to get a free Gemini key →
+                </ThemedText>
+              </Pressable>
+            </Link>
+          ) : provider.keyUrl ? (
             <Pressable accessibilityRole="link" onPress={() => WebBrowser.openBrowserAsync(provider.keyUrl!)}>
               <ThemedText type="small" style={{ color: theme.tint }}>
                 Get a {provider.name} API key →
@@ -144,7 +156,6 @@ function ProviderSettings({ providerId }: { providerId: ProviderId }) {
             </Pressable>
           ) : null}
         </Section>
-      ) : null}
 
       <Section title="Model">
         {visibleModels.map((model) => (
@@ -157,8 +168,7 @@ function ProviderSettings({ providerId }: { providerId: ProviderId }) {
           />
         ))}
 
-        {provider.requiresKey ? (
-          <>
+        <>
             <Button
               title={liveModels ? 'Reload models from provider' : 'Load all models from provider'}
               variant="secondary"
@@ -181,8 +191,7 @@ function ProviderSettings({ providerId }: { providerId: ProviderId }) {
               />
               <Button title="Use" variant="secondary" disabled={!customModel.trim()} onPress={applyCustomModel} />
             </View>
-          </>
-        ) : null}
+        </>
       </Section>
     </>
   );

@@ -22,13 +22,3 @@ export function sumMacros(list: Macros[]): Macros {
     ZERO_MACROS,
   );
 }
-
-export function isSameDay(a: number, b: number): boolean {
-  const dateA = new Date(a);
-  const dateB = new Date(b);
-  return (
-    dateA.getFullYear() === dateB.getFullYear() &&
-    dateA.getMonth() === dateB.getMonth() &&
-    dateA.getDate() === dateB.getDate()
-  );
-}

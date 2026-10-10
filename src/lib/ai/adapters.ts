@@ -17,7 +17,7 @@ export type HttpRequest = { url: string; init: RequestInit };
 /**
  * A provider adapter is a pair of pure functions: one builds the HTTP request,
  * the other pulls the model's text out of the JSON response. Keeping them free of
- * I/O makes each provider easy to unit test and reuse on the server.
+ * I/O makes each provider easy to unit test.
  */
 export type ProviderAdapter = {
   buildRequest: (request: AnalysisRequest) => HttpRequest;
@@ -25,8 +25,6 @@ export type ProviderAdapter = {
   buildListModelsRequest: (apiKey: string) => HttpRequest;
   parseModelList: (body: any) => ModelOption[];
 };
-
-type KeyedProviderId = Exclude<ProviderId, 'free'>;
 
 const JSON_HEADERS = { 'Content-Type': 'application/json' };
 const SCHEMA_NAME = 'nutrition_analysis';
@@ -226,7 +224,7 @@ function chatCompletions(
   };
 }
 
-export const ADAPTERS: Record<KeyedProviderId, ProviderAdapter> = {
+export const ADAPTERS: Record<ProviderId, ProviderAdapter> = {
   openai,
   anthropic,
   gemini,

@@ -16,7 +16,8 @@ export default function RootLayout() {
         <MealHistoryProvider>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="meal/[id]" options={{ title: 'Meal', headerBackTitle: 'History' }} />
+            <Stack.Screen name="meal/[id]" options={{ title: 'Meal', headerBackTitle: 'Week' }} />
+            <Stack.Screen name="gemini-key" options={{ title: 'Get a free Gemini key', presentation: 'modal' }} />
           </Stack>
           <AnimatedSplashOverlay />
         </MealHistoryProvider>

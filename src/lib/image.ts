@@ -49,19 +49,35 @@ export async function prepareImageForAnalysis(
 
 const mealPhotosDirectory = new Directory(Paths.document, 'meal-photos');
 
-/** Copies a photo out of the cache into durable storage so it survives for the meal history. */
+// Meals store only the photo's file name. iOS can move the app's container on update,
+// so absolute paths saved earlier would stop resolving.
+export function mealPhotoUri(fileName: string): string {
+  return new File(mealPhotosDirectory, fileName).uri;
+}
+
+/** Copies a photo out of the cache into durable storage and returns its file name. */
 export async function persistMealPhoto(sourceUri: string, id: string): Promise<string> {
   if (!mealPhotosDirectory.exists) {
     mealPhotosDirectory.create({ intermediates: true, idempotent: true });
   }
-  const destination = new File(mealPhotosDirectory, `${id}.jpg`);
-  await new File(sourceUri).copy(destination);
-  return destination.uri;
+  const fileName = `${id}.jpg`;
+  await new File(sourceUri).copy(new File(mealPhotosDirectory, fileName));
+  return fileName;
 }
 
-export function deleteMealPhoto(uri: string): void {
-  const file = new File(uri);
+export function deleteMealPhoto(fileName: string): void {
+  const file = new File(mealPhotosDirectory, fileName);
   if (file.exists) {
     file.delete();
+  }
+}
+
+/** Removes photos that no saved meal points to, for example after an interrupted save. */
+export function deleteOrphanedMealPhotos(keepFileNames: Set<string>): void {
+  if (!mealPhotosDirectory.exists) return;
+  for (const entry of mealPhotosDirectory.list()) {
+    if (entry instanceof File && !keepFileNames.has(entry.name)) {
+      entry.delete();
+    }
   }
 }
