@@ -161,11 +161,15 @@ Gemini's free tier allows a limited number of requests per day. Leave the key ac
 
 Ready to upload, in [`screenshots/`](screenshots/). All are 1320 × 2868 pixels, the 6.9-inch iPhone size, captured from the iPhone 18 Pro Max simulator with a clean 9:41 status bar. Upload them in this order:
 
-1. `01-scan.png`: Scan tab with the logo, hero and camera buttons
+1. `01-scan.png`: Scan tab with the logo, hero and the photo and barcode buttons
 2. `02-meal-result.png`: a meal's photo with its calorie and macro breakdown
-3. `03-week.png`: the Week calendar with daily totals and today's meals
-4. `04-gemini-key-guide.png`: the free Gemini key guide
-5. `05-settings.png`: AI provider choices in Settings
+3. `03-barcode-result.png`: a scanned bag of chips with its product photo and label nutrition
+4. `04-daily-targets.png`: lose, maintain and gain targets on the Week tab
+5. `05-week.png`: the 7-day calendar with daily totals and today's meals
+6. `06-gemini-key-guide.png`: the free Gemini key guide
+7. `07-settings.png`: AI provider choices in Settings
+
+Apple allows up to 10 screenshots. The first three show in search results, so keep that order.
 
 `extra-first-launch.png` shows the first-launch screen asking for a key. Swap it in for one of the five if you prefer.
 

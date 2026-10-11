@@ -12,3 +12,5 @@ The sample meal photos in these screenshots are from Unsplash, used under the [U
 | Pesto Farfalle with Tomatoes | [Pesto pasta](https://unsplash.com/photos/12eHC6FxPyg) | Eaters Collective |
 
 The nutrition numbers shown for these meals are sample data written for the screenshots, not live AI results.
+
+The product photo in `03-barcode-result.png` comes from [Open Food Facts](https://world.openfoodfacts.org/product/0028400090858) and is licensed CC BY-SA. The app shows the same credit on the barcode screen.
