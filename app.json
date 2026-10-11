@@ -33,6 +33,14 @@
             "NSPrivacyCollectedDataTypePurposes": [
               "NSPrivacyCollectedDataTypePurposeAppFunctionality"
             ]
+          },
+          {
+            "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeSearchHistory",
+            "NSPrivacyCollectedDataTypeLinked": false,
+            "NSPrivacyCollectedDataTypeTracking": false,
+            "NSPrivacyCollectedDataTypePurposes": [
+              "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+            ]
           }
         ],
         "NSPrivacyAccessedAPITypes": [
@@ -94,9 +102,17 @@
       [
         "expo-image-picker",
         {
-          "cameraPermission": "Whatcha Eatin' uses the camera to photograph your food so it can estimate calories and macros.",
+          "cameraPermission": "Whatcha Eatin' uses the camera to photograph your food and scan barcodes so it can estimate calories and macros.",
           "photosPermission": "Whatcha Eatin' reads photos you choose so it can estimate calories and macros.",
           "microphonePermission": false
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Whatcha Eatin' uses the camera to photograph your food and scan barcodes so it can estimate calories and macros.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
         }
       ],
       [

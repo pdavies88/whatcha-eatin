@@ -65,6 +65,16 @@ export async function persistMealPhoto(sourceUri: string, id: string): Promise<s
   return fileName;
 }
 
+/** Downloads a product photo (for example from Open Food Facts) into storage and returns its file name. */
+export async function downloadMealPhoto(url: string, id: string): Promise<string> {
+  if (!mealPhotosDirectory.exists) {
+    mealPhotosDirectory.create({ intermediates: true, idempotent: true });
+  }
+  const fileName = `${id}.jpg`;
+  await File.downloadFileAsync(url, new File(mealPhotosDirectory, fileName), { idempotent: true });
+  return fileName;
+}
+
 export function deleteMealPhoto(fileName: string): void {
   const file = new File(mealPhotosDirectory, fileName);
   if (file.exists) {

@@ -1,14 +1,14 @@
-import { Image } from 'expo-image';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
 
 import { Button } from '@/components/button';
+import { MealPhoto } from '@/components/meal-photo';
 import { NutritionDetails } from '@/components/nutrition-details';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 import { useMealHistory } from '@/context/meal-history-context';
-import { mealPhotoUri } from '@/lib/image';
+import { OPEN_FOOD_FACTS_CREDIT } from '@/lib/barcode/open-food-facts';
 
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
 
@@ -43,11 +43,17 @@ export default function MealDetailScreen() {
     <ThemedView style={styles.container}>
       <Stack.Screen options={{ title: meal.analysis.meal_name }} />
       <ScrollView contentContainerStyle={styles.content} contentInsetAdjustmentBehavior="automatic">
-        <Image source={{ uri: mealPhotoUri(meal.photoFile) }} style={styles.photo} contentFit="cover" />
+        <MealPhoto meal={meal} style={styles.photo} iconSize={64} />
         <NutritionDetails analysis={meal.analysis} />
         <ThemedText type="small" themeColor="textSecondary">
-          {dateTimeFormatter.format(meal.createdAt)} · {meal.providerName} · {meal.model}
+          {dateTimeFormatter.format(meal.createdAt)} · {meal.providerName}
+          {meal.source === 'barcode' ? ` · barcode ${meal.barcode ?? ''}` : ` · ${meal.model}`}
         </ThemedText>
+        {meal.source === 'barcode' ? (
+          <ThemedText type="small" themeColor="textSecondary">
+            {OPEN_FOOD_FACTS_CREDIT}.
+          </ThemedText>
+        ) : null}
         <Button title="Delete meal" variant="destructive" onPress={confirmDelete} />
       </ScrollView>
     </ThemedView>

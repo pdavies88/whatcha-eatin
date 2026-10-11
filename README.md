@@ -4,6 +4,8 @@ Snap a photo of your meal. A vision model estimates the calories and macros. You
 
 - **Bring your own key.** Supported providers are Google Gemini, OpenAI, Anthropic, xAI and OpenRouter. There are no accounts, servers or paid tiers.
 - **Free with Gemini.** Google gives Gemini API keys away for free. The app has a step-by-step guide for creating one.
+- **Barcode scanning.** Scan packaged food to log its label nutrition and product photo from [Open Food Facts](https://world.openfoodfacts.org). No AI key needed.
+- **Daily targets.** Add your age, sex, height, weight and activity to see calorie and macro targets for losing, maintaining or gaining weight, based on the Mifflin-St Jeor equation.
 - **A rolling week.** The Week tab shows a 7-day calendar with daily totals. When a new day starts, the meals from eight days ago are deleted. On Monday, for example, the previous Monday's meals are removed.
 - **On-device only.** Keys are stored in the iOS Keychain. Meals live in on-device SQLite storage and photos in the app's documents folder. Photos go straight from the phone to the provider you choose.
 
@@ -55,6 +57,8 @@ src/
     (tabs)/               Scan, Week, Settings (native tabs)
     meal/[id].tsx         Meal detail
     gemini-key.tsx        Guide for creating a free Gemini key
+    barcode.tsx           Barcode scanner and product result
+    profile.tsx           Age, sex, height, weight, activity and goal form
   components/brand/       Logo (logo-svg.ts is the single source), food shapes, hero, splash overlay
   lib/
     ai/providers.ts       Provider registry and suggested models
@@ -63,6 +67,8 @@ src/
     nutrition/            Zod schema, JSON Schema for structured output, prompt, parsing
     storage/              API keys (SecureStore), settings and meals (SQLite kv-store)
     week.ts               7-day retention window and calendar day math
+    targets.ts            Daily calorie and macro targets (Mifflin-St Jeor)
+    barcode/              Open Food Facts lookup and parsing
     image.ts              Resize to 1024px JPEG; store and clean up meal photos
   context/                Settings and meal history providers
 plugins/

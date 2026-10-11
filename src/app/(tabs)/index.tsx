@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { Link } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -32,13 +32,27 @@ export default function ScanScreen() {
   const { state, analyze, reset } = useFoodAnalysis();
   const [context, setContext] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  // Set by the barcode screen when a product isn't in Open Food Facts, so the user can photograph its label.
+  const { labelFor } = useLocalSearchParams<{ labelFor?: string }>();
+
+  const analysisContext = () =>
+    [
+      labelFor
+        ? `This is a photo of the Nutrition Facts label for ${labelFor}. Use the label's values for one serving.`
+        : '',
+      context,
+    ]
+      .filter(Boolean)
+      .join(' ');
 
   const handlePicked = (result: ImagePicker.ImagePickerResult) => {
     const asset = result.canceled ? undefined : result.assets[0];
     if (!asset) return;
     const photo: PickedPhoto = { uri: asset.uri, width: asset.width, height: asset.height };
-    void analyze(photo, context);
+    void analyze(photo, analysisContext());
   };
+
+  const clearLabelPrompt = () => router.setParams({ labelFor: undefined });
 
   const takePhoto = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
@@ -73,6 +87,7 @@ export default function ScanScreen() {
         analysis: state.analysis,
       });
       setContext('');
+      clearLabelPrompt();
       reset();
     } catch {
       Alert.alert('Could not save meal', 'Please try again.');
@@ -107,7 +122,26 @@ export default function ScanScreen() {
                 </ThemedText>
               </View>
 
-              {keysLoaded && !activeModel ? <SetupCard /> : null}
+              {keysLoaded && !activeModel ? (
+                <>
+                  <SetupCard />
+                  <Button title="Scan a barcode (no key needed)" variant="secondary" onPress={openBarcodeScanner} />
+                </>
+              ) : null}
+
+              {labelFor && activeModel ? (
+                <ThemedView type="backgroundElement" style={styles.setupCard}>
+                  <ThemedText type="smallBold">Photograph the label for {labelFor}</ThemedText>
+                  <ThemedText type="small" themeColor="textSecondary">
+                    Take a clear photo of the Nutrition Facts panel. The AI will read the calories and macros from it.
+                  </ThemedText>
+                  <Pressable accessibilityRole="button" onPress={clearLabelPrompt}>
+                    <ThemedText type="small" style={{ color: theme.tint }}>
+                      Cancel
+                    </ThemedText>
+                  </Pressable>
+                </ThemedView>
+              ) : null}
 
               {activeModel && provider ? (
                 <>
@@ -141,6 +175,7 @@ export default function ScanScreen() {
                   <View style={styles.actions}>
                     <Button title="Take photo" onPress={takePhoto} />
                     <Button title="Choose from library" variant="secondary" onPress={choosePhoto} />
+                    <Button title="Scan a barcode" variant="secondary" onPress={openBarcodeScanner} />
                   </View>
                 </>
               ) : null}
@@ -168,7 +203,7 @@ export default function ScanScreen() {
             {state.status === 'error' ? (
               <View style={styles.status}>
                 <ThemedText style={{ color: theme.danger }}>{state.message}</ThemedText>
-                <Button title="Try again" onPress={() => analyze(state.photo, context)} />
+                <Button title="Try again" onPress={() => analyze(state.photo, analysisContext())} />
                 <Button title="Start over" variant="secondary" onPress={reset} />
               </View>
             ) : null}
@@ -190,6 +225,8 @@ export default function ScanScreen() {
     </ThemedView>
   );
 }
+
+const openBarcodeScanner = () => router.push('/barcode');
 
 /** First-run prompt shown until the user adds an API key. */
 function SetupCard() {

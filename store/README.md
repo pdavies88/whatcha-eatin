@@ -52,6 +52,12 @@ Whatcha Eatin' estimates the calories and macros in your meal from a single phot
 
 Snap your plate, and the app breaks it down into each food it sees, with calories, protein, carbs, fat, fiber and sugar. Add a quick note like "cooked in olive oil" or "large bowl" for a better estimate.
 
+SCAN PACKAGED FOOD
+Eating a bag of chips or a protein bar? Scan its barcode instead. Whatcha Eatin' looks it up in the free Open Food Facts database and logs the label's nutrition and the product photo. Barcode scanning doesn't need an AI key.
+
+YOUR DAILY TARGETS
+Add your age, height, weight and activity level to see how many calories, protein, carbs and fat you need each day to lose, maintain or gain weight. Each day in your week is compared with the goal you pick.
+
 A ROLLING WEEK
 The Week tab shows a 7-day calendar with your daily totals. Tap any day to see its meals. Older meals clear out automatically, so the app stays light.
 
@@ -81,22 +87,28 @@ Apple doesn't allow other companies' trademarks in keywords, so "Gemini" and "Ch
 App Store Connect → **App Privacy → Get Started**.
 
 1. **Do you or your third-party partners collect data from this app?** Yes.
-2. **Data types:** select these two and nothing else.
+2. **Data types:** select these three and nothing else.
    - **User Content → Photos or Videos**
    - **User Content → Other User Content** (the optional meal notes)
-3. For **each** of the two types, answer:
+   - **Search History** (barcode lookups)
+3. For **Photos or Videos** and **Other User Content**, answer:
    - **Purpose:** App Functionality only.
    - **Is this data linked to the user's identity?** Yes.
    - **Is this data used for tracking?** No.
+4. For **Search History**, answer:
+   - **Purpose:** App Functionality only.
+   - **Is this data linked to the user's identity?** No.
+   - **Is this data used for tracking?** No.
 
-The resulting label shows "Data Linked to You: User Content" and "Data Used to Track You: None".
+The resulting label shows "Data Linked to You: User Content", "Data Not Linked to You: Search History" and "Data Used to Track You: None".
 
 Why these answers:
 - **Photos and notes:** when the user analyzes a meal, the photo and any notes go to the AI provider the user selected. Apple counts data sent to a third party as collected when that party can keep it longer than the request takes. Providers can, and Google's free Gemini tier may use it to improve its products.
 - **Linked:** each request uses the user's own API key, so the provider can tie it to the user's account. This is the cautious answer.
-- **Not collected:** meals, photos and settings stored only on the device. API keys, which never reach the developer and are only sent to the provider as credentials.
+- **Barcode lookups:** scanning sends only the barcode number to Open Food Facts, with no key, account or personal details. Open Food Facts can still log the lookup, so it is declared as Search History that isn't linked to the user.
+- **Not collected:** meals, photos, settings and the optional profile (age, sex, height, weight, activity, goal), which are stored only on the device. API keys, which never reach the developer and are only sent to the provider as credentials.
 - **No tracking:** the app has no analytics, advertising or tracking code.
-- **Consistency:** the app's privacy manifest (`ios.privacyManifests` in `app.json`) declares the same two data types, so the build and the label match.
+- **Consistency:** the app's privacy manifest (`ios.privacyManifests` in `app.json`) declares the same three data types, so the build and the label match.
 
 ## Age rating
 
@@ -137,6 +149,8 @@ Steps:
 3. Tap "Choose from library" (or "Take photo" on a device) and pick a photo of food.
 4. The app shows the meal's estimated calories, protein, carbs and fat. Tap "Save to this week".
 5. Open the Week tab to see the saved meal and daily totals.
+6. Barcodes need no key. On the Scan tab, tap "Scan a barcode". Scan any packaged food, or type 028400090858 (Lay's Classic Potato Chips) into the number field and tap "Look up", then tap "Save to this week".
+7. On the Week tab, tap "Add your details" and enter any adult age, height and weight to see daily calorie and macro targets.
 
 Privacy policy and support links are in Settings → About.
 ```

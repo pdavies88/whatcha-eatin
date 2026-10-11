@@ -1,16 +1,16 @@
-import { Image } from 'expo-image';
 import { Link, useFocusEffect } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { MacroSummary } from '@/components/macro-summary';
+import { MealPhoto } from '@/components/meal-photo';
+import { TargetsCard } from '@/components/targets-card';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useMealHistory } from '@/context/meal-history-context';
 import { useTheme } from '@/hooks/use-theme';
-import { mealPhotoUri } from '@/lib/image';
 import { sumMacros } from '@/lib/nutrition/totals';
 import type { MealEntry } from '@/lib/storage/meal-history';
 import { dayKey, RETENTION_DAYS, trackedDays } from '@/lib/week';
@@ -50,6 +50,7 @@ export default function WeekScreen() {
   const selectedMeals = [...(mealsByDay.get(activeKey) ?? [])].sort((a, b) => a.createdAt - b.createdAt);
   const selectedDate = days.find((day) => dayKey(day) === activeKey) ?? new Date(now);
   const selectedLabel = activeKey === todayKey ? 'Today' : dayLabelFormatter.format(selectedDate);
+  const selectedTotals = sumMacros(selectedMeals.map((meal) => meal.analysis.totals));
 
   return (
     <ThemedView style={styles.container}>
@@ -61,6 +62,8 @@ export default function WeekScreen() {
               Meals stay on this phone for {RETENTION_DAYS} days, then they are cleared automatically.
             </ThemedText>
           </View>
+
+          <TargetsCard dayCalories={selectedTotals.calories} dayLabel={selectedLabel} />
 
           <View style={styles.strip} accessibilityRole="tablist">
             {days.map((day, index) => {
@@ -86,7 +89,7 @@ export default function WeekScreen() {
           ) : null}
 
           <MacroSummary
-            macros={sumMacros(selectedMeals.map((meal) => meal.analysis.totals))}
+            macros={selectedTotals}
             label={selectedLabel}
           />
 
@@ -165,7 +168,7 @@ function MealRow({ meal }: { meal: MealEntry }) {
       <Pressable accessibilityRole="button">
         {({ pressed }) => (
           <ThemedView type="backgroundElement" style={[styles.row, pressed && styles.pressed]}>
-            <Image source={{ uri: mealPhotoUri(meal.photoFile) }} style={styles.thumbnail} contentFit="cover" />
+            <MealPhoto meal={meal} style={styles.thumbnail} />
             <View style={styles.rowText}>
               <ThemedText type="smallBold" numberOfLines={1}>
                 {meal.analysis.meal_name}

@@ -10,13 +10,18 @@ const LEGACY_HISTORY_KEY = 'mealHistory.v1';
 export const MealEntrySchema = z.object({
   id: z.string(),
   createdAt: z.number(),
-  photoFile: z.string(),
+  /** File name in the meal-photos folder. Missing for scanned products that have no photo. */
+  photoFile: z.string().optional(),
+  /** How the meal was logged. Older entries predate barcode scanning, so they default to a photo. */
+  source: z.enum(['photo', 'barcode']).default('photo'),
+  barcode: z.string().optional(),
   providerName: z.string(),
   model: z.string(),
   analysis: NutritionAnalysisSchema,
 });
 
 export type MealEntry = z.infer<typeof MealEntrySchema>;
+export type NewMealEntry = z.input<typeof MealEntrySchema>;
 
 export async function loadMealHistory(): Promise<MealEntry[]> {
   // Early test builds used a different format. Those meals are older than the 7-day window anyway.

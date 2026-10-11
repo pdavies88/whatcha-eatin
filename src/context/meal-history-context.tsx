@@ -2,13 +2,13 @@ import { createContext, use, useEffect, useState, type ReactNode } from 'react';
 import { AppState } from 'react-native';
 
 import { deleteMealPhoto, deleteOrphanedMealPhotos } from '@/lib/image';
-import { loadMealHistory, saveMealHistory, type MealEntry } from '@/lib/storage/meal-history';
+import { loadMealHistory, MealEntrySchema, saveMealHistory, type MealEntry, type NewMealEntry } from '@/lib/storage/meal-history';
 import { partitionByRetention } from '@/lib/week';
 
 type MealHistoryContextValue = {
   meals: MealEntry[];
   isLoaded: boolean;
-  addMeal: (meal: MealEntry) => void;
+  addMeal: (meal: NewMealEntry) => void;
   removeMeal: (id: string) => void;
 };
 
@@ -20,7 +20,7 @@ const MealHistoryContext = createContext<MealHistoryContextValue | null>(null);
  */
 function pruneExpired(meals: MealEntry[]): MealEntry[] {
   const { kept, expired } = partitionByRetention(meals, Date.now());
-  for (const meal of expired) deleteMealPhoto(meal.photoFile);
+  for (const meal of expired) if (meal.photoFile) deleteMealPhoto(meal.photoFile);
   return expired.length > 0 ? kept : meals;
 }
 
@@ -42,7 +42,7 @@ export function MealHistoryProvider({ children }: { children: ReactNode }) {
       if (cancelled) return;
       const kept = pruneExpired(loaded);
       if (kept !== loaded) void saveMealHistory(kept);
-      deleteOrphanedMealPhotos(new Set(kept.map((meal) => meal.photoFile)));
+      deleteOrphanedMealPhotos(new Set(kept.flatMap((meal) => (meal.photoFile ? [meal.photoFile] : []))));
       setMeals(kept);
       setIsLoaded(true);
     });
@@ -61,10 +61,10 @@ export function MealHistoryProvider({ children }: { children: ReactNode }) {
   const value: MealHistoryContextValue = {
     meals,
     isLoaded,
-    addMeal: (meal) => updateMeals((previous) => pruneExpired([meal, ...previous])),
+    addMeal: (meal) => updateMeals((previous) => pruneExpired([MealEntrySchema.parse(meal), ...previous])),
     removeMeal: (id) => {
       const meal = meals.find((entry) => entry.id === id);
-      if (meal) deleteMealPhoto(meal.photoFile);
+      if (meal?.photoFile) deleteMealPhoto(meal.photoFile);
       updateMeals((previous) => previous.filter((entry) => entry.id !== id));
     },
   };
