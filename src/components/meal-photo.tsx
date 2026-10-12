@@ -33,7 +33,7 @@ export function MealPhoto({
 
   return (
     <View style={[style, styles.placeholder, { backgroundColor: theme.backgroundSelected }]}>
-      <SymbolView name="barcode" size={iconSize} tintColor={theme.textSecondary} />
+      <SymbolView name={{ ios: 'barcode', android: 'barcode' }} size={iconSize} tintColor={theme.textSecondary} />
     </View>
   );
 }
