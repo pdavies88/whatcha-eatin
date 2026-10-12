@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/button';
+import { KeyboardAwareScrollView } from '@/components/keyboard-aware-scroll-view';
 import { MacroSummary } from '@/components/macro-summary';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -124,12 +125,9 @@ function Scanner({
   };
 
   return (
-    <ScrollView
+    <KeyboardAwareScrollView
       contentContainerStyle={styles.content}
-      contentInsetAdjustmentBehavior="automatic"
-      keyboardDismissMode="interactive"
-      keyboardShouldPersistTaps="handled"
-      automaticallyAdjustKeyboardInsets>
+      contentInsetAdjustmentBehavior="automatic">
       <View style={[styles.cameraFrame, { backgroundColor: theme.backgroundElement }]}>
         {permission?.granted ? (
           <>
@@ -177,7 +175,7 @@ function Scanner({
           <Button title="Look up" variant="secondary" disabled={manualCode.length < 8} onPress={submitManual} />
         </View>
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
 

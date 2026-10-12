@@ -2,10 +2,11 @@ import Constants from 'expo-constants';
 import { Link } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
-import { Alert, Linking, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Linking, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/button';
+import { KeyboardAwareScrollView } from '@/components/keyboard-aware-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { APP_NAME, PRIVACY_POLICY_URL, SUPPORT_EMAIL, SUPPORT_URL } from '@/constants/brand';
@@ -21,12 +22,8 @@ export default function SettingsScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView edges={['top']} style={styles.container}>
-        <ScrollView
-          contentContainerStyle={styles.content}
-          keyboardDismissMode="interactive"
-          // Makes room for the iOS keyboard and scrolls the focused input above it.
-          automaticallyAdjustKeyboardInsets
-          keyboardShouldPersistTaps="handled">
+        <KeyboardAwareScrollView
+          contentContainerStyle={styles.content}>
           <ThemedText type="subtitle">Settings</ThemedText>
 
           <Section title="AI provider">
@@ -52,7 +49,7 @@ export default function SettingsScreen() {
           </ThemedText>
 
           <AboutSection />
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
     </ThemedView>
   );

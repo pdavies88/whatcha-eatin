@@ -1,9 +1,10 @@
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, StyleSheet, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/button';
+import { KeyboardAwareScrollView } from '@/components/keyboard-aware-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { APP_NAME } from '@/constants/brand';
@@ -51,12 +52,8 @@ export default function GeminiKeyScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardDismissMode="interactive"
-        // Makes room for the iOS keyboard and scrolls the focused input above it.
-        automaticallyAdjustKeyboardInsets
-        keyboardShouldPersistTaps="handled">
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.content}>
         <ThemedText themeColor="textSecondary">
           {APP_NAME} has no servers and no accounts. You bring your own AI key. Google gives Gemini keys away
           for free, with daily limits that are plenty for logging meals. No credit card is needed.
@@ -105,7 +102,7 @@ export default function GeminiKeyScreen() {
           free tier, Google&apos;s terms let it use what you send to improve its products. If that matters to you,
           turn on billing for your Google project or use another provider in Settings.
         </ThemedText>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </ThemedView>
   );
 }

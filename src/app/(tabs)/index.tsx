@@ -2,11 +2,12 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Hero } from '@/components/brand/hero';
 import { Button } from '@/components/button';
+import { KeyboardAwareScrollView } from '@/components/keyboard-aware-scroll-view';
 import { NutritionDetails } from '@/components/nutrition-details';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -104,12 +105,8 @@ export default function ScanScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ScrollView
+      <KeyboardAwareScrollView
         contentInsetAdjustmentBehavior="never"
-        keyboardDismissMode="interactive"
-        // Makes room for the iOS keyboard and scrolls the focused input above it.
-        automaticallyAdjustKeyboardInsets
-        keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.scroll}>
         {state.status === 'idle' ? (
           <>
@@ -221,7 +218,7 @@ export default function ScanScreen() {
             ) : null}
           </View>
         )}
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </ThemedView>
   );
 }

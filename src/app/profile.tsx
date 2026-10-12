@@ -1,8 +1,9 @@
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/button';
+import { KeyboardAwareScrollView } from '@/components/keyboard-aware-scroll-view';
 import { KeyboardDoneBar } from '@/components/keyboard-done-bar';
 import { SegmentedControl } from '@/components/segmented-control';
 import { ThemedText } from '@/components/themed-text';
@@ -109,12 +110,9 @@ export default function ProfileScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ScrollView
+      <KeyboardAwareScrollView
         contentContainerStyle={styles.content}
-        contentInsetAdjustmentBehavior="automatic"
-        keyboardDismissMode="interactive"
-        keyboardShouldPersistTaps="handled"
-        automaticallyAdjustKeyboardInsets>
+        contentInsetAdjustmentBehavior="automatic">
         <ThemedText themeColor="textSecondary">
           Your details stay on this phone. They’re used only to estimate how many calories and macros you need each
           day, and they’re never sent to an AI provider.
@@ -242,7 +240,7 @@ export default function ProfileScreen() {
 
         <Button title="Save" onPress={save} />
         {profile ? <Button title="Clear my details" variant="destructive" onPress={clear} /> : null}
-      </ScrollView>
+      </KeyboardAwareScrollView>
       {['done-age', 'done-feet', 'done-inches', 'done-cm', 'done-weight'].map((id) => (
         <KeyboardDoneBar key={id} id={id} />
       ))}
