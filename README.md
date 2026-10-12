@@ -48,6 +48,7 @@ On the free tier, Google's terms let it use what you send to improve its product
 | `npm run typecheck` | TypeScript                  |
 | `npm run lint`      | ESLint (eslint-config-expo) |
 | `node scripts/generate-brand-assets.mjs` | Re-render the app icon, splash and favicon from the logo |
+| `node scripts/generate-play-assets.mjs` | Re-render the Google Play feature graphic and screenshots |
 
 ## How it works
 

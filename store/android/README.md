@@ -54,6 +54,63 @@ The first upload is easiest by hand. Later uploads can be automatic (see step 7)
 
 If Play Console won't publish, it lists the setup tasks it still needs. Answers for those are in section 5.
 
+## 4a. Main store listing
+
+Play Console requires the main store listing before it will publish, even for internal testing. Fill it in under **Grow users → Store presence → Main store listing**.
+
+| Field | Value |
+| --- | --- |
+| App name | `Whatcha Eatin'` |
+| Short description (76/80) | `Snap a meal or scan a barcode to see calories and macros. No account needed.` |
+| App icon | `play-icon-512.png` (512 × 512) |
+| Feature graphic | `feature-graphic-1024x500.png` (1024 × 500) |
+| Phone screenshots | All seven in `screenshots/`, in number order (1320 × 2640) |
+
+Leave tablet and Chromebook screenshots empty. They're optional.
+
+### Full description (1582/4000)
+
+```
+Whatcha Eatin' estimates the calories and macros in your meal from a single photo.
+
+Snap your plate, and the app breaks it down into each food it sees, with calories, protein, carbs, fat, fiber and sugar. Add a quick note like "cooked in olive oil" or "large bowl" for a better estimate.
+
+SCAN PACKAGED FOOD
+Eating a bag of chips or a protein bar? Scan its barcode instead. Whatcha Eatin' looks it up in the free Open Food Facts database and logs the label's nutrition and the product photo. Barcode scanning doesn't need an AI key.
+
+YOUR DAILY TARGETS
+Add your age, height, weight and activity level to see how many calories, protein, carbs and fat you need each day to lose, maintain or gain weight. Each day in your week is compared with the goal you pick.
+
+A ROLLING WEEK
+The Week tab shows a 7-day calendar with your daily totals. Tap any day to see its meals. Older meals clear out automatically, so the app stays light.
+
+NO ACCOUNTS, NO SUBSCRIPTIONS
+Whatcha Eatin' uses your own AI key. A Google Gemini key is free, and the app walks you through creating one in about a minute. Prefer another AI? You can also use OpenAI, Anthropic, xAI or OpenRouter, and choose the exact model.
+
+PRIVATE BY DESIGN
+- No sign-up and no servers
+- No ads, analytics or tracking
+- Meals and photos are stored only on your phone
+- Photos go straight from your phone to the AI provider you choose, only when you analyze them
+- API keys are kept in your phone's secure storage
+
+Calorie and macro numbers are AI estimates and can be off by 20% or more. They are a helpful guide, not medical advice.
+```
+
+### Store settings
+
+Fill these in under **Grow users → Store presence → Store settings**.
+
+| Field | Value |
+| --- | --- |
+| App category | Health & Fitness |
+| Tags | Pick up to five, for example: Calorie counter, Diet & nutrition, Food tracker |
+| Email address | `preston5@protonmail.com` |
+| Website | `https://pdavies88.github.io/whatcha-eatin/` |
+| Phone | Leave empty |
+
+To rebuild the feature graphic and screenshots after changing the logo or the iPhone screenshots, run `node scripts/generate-play-assets.mjs`.
+
 ## 5. App content answers
 
 You'll find these under **Policy and programs → App content**, or on the dashboard's **Set up your app** list.
