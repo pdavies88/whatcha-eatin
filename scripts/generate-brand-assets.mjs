@@ -22,6 +22,9 @@ render(buildLogoSvg({ cornerRadius: 0 }), 1024, 'assets/images/icon.png');
 render(buildLogoSvg(), 1024, 'assets/images/splash-icon.png');
 render(buildLogoSvg(), 48, 'assets/images/favicon.png');
 
+// Google Play store listing icon (512 × 512, full-bleed square; Play rounds the corners).
+render(buildLogoSvg({ cornerRadius: 0 }), 512, 'store/android/play-icon-512.png');
+
 // Logo and favicon for the public privacy and support pages in docs/ (GitHub Pages).
 render(buildLogoSvg(), 256, 'docs/logo.png');
 render(buildLogoSvg(), 48, 'docs/favicon.png');
