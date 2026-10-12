@@ -169,6 +169,8 @@ Ready to upload, in [`screenshots/`](screenshots/). All are 1320 × 2868 pixels,
 6. `06-gemini-key-guide.png`: the free Gemini key guide
 7. `07-settings.png`: AI provider choices in Settings
 
+`6.3-inch/` has the same seven screenshots at 1206 × 2622, for App Store Connect's 6.1"/6.3" display slot. Regenerate them after retaking with `for f in 0*.png; do sips -z 2622 1206 "$f" --out "6.3-inch/$f"; done` from `store/screenshots/`.
+
 Apple allows up to 10 screenshots. The first three show in search results, so keep that order.
 
 `extra-first-launch.png` shows the first-launch screen asking for a key. Swap it in for one of the five if you prefer.
