@@ -136,26 +136,65 @@ Apple updated this questionnaire in 2025, so the exact wording may differ. The e
 
 Create a separate Google AI Studio project and key just for App Review, so you can delete it after approval. Paste the key where shown below, in App Store Connect only.
 
-```
-Whatcha Eatin' estimates calories and macros from a food photo. It has no accounts and no backend. Each user brings their own AI provider API key, and photos go directly from the device to that provider.
+These notes also answer the six questions in Apple's "Guideline 2.1 - Information Needed" request, which new developer accounts get. Paste the same text as your reply in App Store Connect **and** into the App Review **Notes** field. The Notes field allows 4,000 characters, and this text is about 3,950 with a key pasted in.
 
-To test, please use this Google Gemini API key (free tier, created for App Review):
+```
+1. SCREEN RECORDING
+Attached: a recording on a physical iPhone running the latest iOS, starting from launch. It shows setting up a free AI key, analyzing a meal photo, scanning a barcode, the week view, daily targets and deleting a meal. The app has no account registration or login, no user-generated content shared with other users, and no paid content or in-app purchases.
+
+2. PURPOSE AND AUDIENCE
+Whatcha Eatin' helps adults (18+) understand what they eat. Logging food by hand is slow, so many people give up tracking calories. The app makes it quick: take a photo of a meal and an AI model estimates the calories, protein, carbs, fat, fiber and sugar of each food it sees, or scan the barcode of packaged food to log its label nutrition. Meals are kept for a rolling 7 days, and optional daily targets show how much to eat to lose, maintain or gain weight. Data stays on the device, with no accounts, ads, analytics or subscriptions.
+
+3. SETUP AND TEST INSTRUCTIONS
+No login is needed. AI photo analysis uses the user's own AI provider key; Google provides Gemini keys for free, and the app includes a step-by-step guide. Please use this Gemini key, created for App Review:
 
 <PASTE GEMINI KEY HERE>
 
-Steps:
-1. Launch the app. On the Scan tab, tap "Get a free Gemini key".
-2. Paste the key above into the field at the bottom and tap Save. The app checks the key with Google and returns to the Scan tab.
-3. Tap "Choose from library" (or "Take photo" on a device) and pick a photo of food.
-4. The app shows the meal's estimated calories, protein, carbs and fat. Tap "Save to this week".
-5. Open the Week tab to see the saved meal and daily totals.
-6. Barcodes need no key. On the Scan tab, tap "Scan a barcode". Scan any packaged food, or type 028400090858 (Lay's Classic Potato Chips) into the number field and tap "Look up", then tap "Save to this week".
-7. On the Week tab, tap "Add your details" and enter any adult age, height and weight to see daily calorie and macro targets.
+a. Launch the app. On the Scan tab, tap "Get a free Gemini key".
+b. Paste the key into the field at the bottom and tap Save. The app checks the key with Google and returns to the Scan tab.
+c. Tap "Take photo" and photograph any food (or "Choose from library"). The app shows the estimated calories and macros. Tap "Save to this week".
+d. Barcode scanning needs no key: tap "Scan a barcode" and scan any packaged food, or type 028400090858 (Lay's Classic Potato Chips) and tap "Look up". Tap "Save to this week".
+e. Open the Week tab to see the 7-day calendar and today's meals. Tap a meal, then "Delete meal" to remove it.
+f. On the Week tab, tap "Add your details" and enter any adult age, height and weight to see daily calorie and macro targets.
+g. Settings lets users choose an AI provider and model. Settings > About links to the privacy policy and support.
+No sample files are needed.
 
-Privacy policy and support links are in Settings → About.
+4. EXTERNAL SERVICES
+- Google Gemini API (default AI provider), called directly from the device with the user's own key to analyze meal photos.
+- Optional alternative AI providers, also with the user's own key: OpenAI, Anthropic, xAI and OpenRouter.
+- Open Food Facts (open, free food database) to look up packaged foods by barcode. Only the barcode number is sent.
+- Google AI Studio website, opened in an in-app browser, where users create a free Gemini key.
+The app has no backend server, authentication service, payment processor, analytics or advertising SDK.
+
+5. REGIONAL DIFFERENCES
+The app works the same in every region. All features are available everywhere, and users can choose US or metric units. The only difference is outside the app: each AI provider decides which countries its API serves, so if one provider is unavailable in a user's country, they can choose another provider in Settings.
+
+6. REGULATED INDUSTRY AND THIRD-PARTY MATERIAL
+The app is not a medical device and does not diagnose, treat or manage any medical condition. It gives general wellness nutrition estimates for adults, says in the app that estimates are not medical advice, and advises people with medical conditions, or who are pregnant, to consult a doctor. Daily targets use the published Mifflin-St Jeor equation with safe minimum calorie levels, are not shown to users under 18, and include no weight-loss target for users with a BMI under 18.5.
+No protected third-party material is used. Barcode product data and photos come from Open Food Facts under the Open Database License and CC BY-SA, and are credited in the app. Food photos in the App Store screenshots are from Unsplash under the Unsplash License.
+
+Privacy policy: https://pdavies88.github.io/whatcha-eatin/privacy/
+Support: https://pdavies88.github.io/whatcha-eatin/support/
 ```
 
 Gemini's free tier allows a limited number of requests per day. Leave the key active until the review is approved. Then delete it in Google AI Studio.
+
+### Screen recording for App Review
+
+Apple asks for a recording on a physical iPhone running the latest iOS, starting from launch.
+
+1. Update the iPhone to the latest iOS. Delete the app, then reinstall the build you submitted from TestFlight, so the first-run setup appears.
+2. Add **Screen Recording** to Control Center (Settings → Control Center) if it isn't there. Swipe down from the top right and tap the record button. The countdown gives you 3 seconds.
+3. Record this flow, slowly, in about 2–3 minutes:
+   1. On the Home Screen, tap the app icon.
+   2. Scan tab: tap **Get a free Gemini key**, scroll the guide, paste the review key and tap **Save**. Don't open Google AI Studio on camera, because it shows your account.
+   3. Tap **Take photo** and photograph real food. Wait for the result, then tap **Save to this week**.
+   4. Tap **Scan a barcode** and scan a packaged food. Change the servings, then tap **Save to this week**.
+   5. Week tab: show the calendar and today's meals. Tap a meal, scroll it, then tap **Delete meal** and confirm.
+   6. Tap **Add your details**, fill in the form and **Save** to show the daily targets.
+   7. Settings: show the providers and models, then **About → Privacy policy**.
+4. Stop recording from the red status indicator. The video is saved to Photos.
+5. AirDrop it to your Mac. Attach it to your reply in App Store Connect. If the upload is too large, export a smaller copy with QuickTime (File → Export As → 1080p) and try again.
 
 ## Screenshots
 
