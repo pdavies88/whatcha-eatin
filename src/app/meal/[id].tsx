@@ -1,13 +1,14 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { MealPhoto } from '@/components/meal-photo';
 import { NutritionDetails } from '@/components/nutrition-details';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { DisplayFont, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useMealHistory } from '@/context/meal-history-context';
+import { useTheme } from '@/hooks/use-theme';
 import { OPEN_FOOD_FACTS_CREDIT } from '@/lib/barcode/open-food-facts';
 
 const dateTimeFormatter = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
@@ -15,6 +16,7 @@ const dateTimeFormatter = new Intl.DateTimeFormat(undefined, { dateStyle: 'mediu
 export default function MealDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { meals, removeMeal } = useMealHistory();
+  const theme = useTheme();
   const meal = meals.find((entry) => entry.id === id);
 
   if (!meal) {
@@ -43,7 +45,16 @@ export default function MealDetailScreen() {
     <ThemedView style={styles.container}>
       <Stack.Screen options={{ title: meal.analysis.meal_name }} />
       <ScrollView contentContainerStyle={styles.content} contentInsetAdjustmentBehavior="automatic">
-        <MealPhoto meal={meal} style={styles.photo} iconSize={64} />
+        {meal.source === 'text' && meal.description ? (
+          <View style={[styles.quote, { borderLeftColor: theme.tint }]}>
+            <ThemedText themeColor="textSecondary" type="smallBold">
+              YOU SAID
+            </ThemedText>
+            <ThemedText style={styles.quoteText}>{meal.description}</ThemedText>
+          </View>
+        ) : (
+          <MealPhoto meal={meal} style={styles.photo} iconSize={64} />
+        )}
         <NutritionDetails analysis={meal.analysis} />
         <ThemedText type="small" themeColor="textSecondary">
           {dateTimeFormatter.format(meal.createdAt)} · {meal.providerName}
@@ -78,6 +89,17 @@ const styles = StyleSheet.create({
   photo: {
     width: '100%',
     aspectRatio: 4 / 3,
-    borderRadius: Spacing.four,
+    borderRadius: 16,
+  },
+  quote: {
+    borderLeftWidth: 4,
+    paddingLeft: Spacing.three,
+    gap: Spacing.one,
+  },
+  quoteText: {
+    fontSize: 20,
+    lineHeight: 28,
+    fontFamily: DisplayFont.medium,
+    fontWeight: 'normal',
   },
 });

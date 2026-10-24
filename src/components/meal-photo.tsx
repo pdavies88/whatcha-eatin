@@ -6,13 +6,13 @@ import { useTheme } from '@/hooks/use-theme';
 import { mealPhotoUri } from '@/lib/image';
 import type { MealEntry } from '@/lib/storage/meal-history';
 
-/** A meal's saved photo, or a barcode placeholder for scanned products that came without one. */
+/** A meal's saved photo, or a placeholder icon for typed meals and scanned products without one. */
 export function MealPhoto({
   meal,
   style,
   iconSize = 28,
 }: {
-  meal: Pick<MealEntry, 'photoFile' | 'analysis'>;
+  meal: Pick<MealEntry, 'photoFile' | 'analysis' | 'source'>;
   style: StyleProp<ViewStyle>;
   iconSize?: number;
 }) {
@@ -33,7 +33,11 @@ export function MealPhoto({
 
   return (
     <View style={[style, styles.placeholder, { backgroundColor: theme.backgroundSelected }]}>
-      <SymbolView name={{ ios: 'barcode', android: 'barcode' }} size={iconSize} tintColor={theme.textSecondary} />
+      <SymbolView
+        name={meal.source === 'text' ? { ios: 'text.alignleft', android: 'notes' } : { ios: 'barcode', android: 'barcode' }}
+        size={iconSize}
+        tintColor={theme.textSecondary}
+      />
     </View>
   );
 }

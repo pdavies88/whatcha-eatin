@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.one,
     paddingVertical: Spacing.two,
-    borderRadius: Spacing.three,
+    borderRadius: 12,
   },
   barTrack: {
     width: 8,
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     gap: Spacing.three,
     padding: Spacing.two,
     paddingRight: Spacing.three,
-    borderRadius: Spacing.three,
+    borderRadius: 12,
   },
   pressed: {
     opacity: 0.7,

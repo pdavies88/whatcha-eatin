@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   input: {
     minHeight: 48,
-    borderRadius: Spacing.three,
+    borderRadius: 12,
     paddingHorizontal: Spacing.three,
     fontSize: 16,
   },

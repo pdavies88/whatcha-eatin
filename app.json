@@ -76,7 +76,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#FF7F63",
+        "backgroundColor": "#0B0B0B",
         "foregroundImage": "./assets/images/android-icon-foreground.png"
       },
       "predictiveBackGestureEnabled": false,
@@ -98,9 +98,9 @@
         {
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 120,
-          "backgroundColor": "#FFF1E4",
+          "backgroundColor": "#0B0B0B",
           "dark": {
-            "backgroundColor": "#2B1720"
+            "backgroundColor": "#0B0B0B"
           }
         }
       ],
@@ -108,7 +108,7 @@
         "expo-image-picker",
         {
           "cameraPermission": "Whatcha Eatin' uses the camera to photograph your food and scan barcodes so it can estimate calories and macros.",
-          "photosPermission": "Whatcha Eatin' reads photos you choose so it can estimate calories and macros.",
+          "photosPermission": false,
           "microphonePermission": false
         }
       ],

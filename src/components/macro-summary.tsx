@@ -82,7 +82,7 @@ export function formatGrams(value: number): string {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: Spacing.four,
+    borderRadius: 16,
     padding: Spacing.four,
     gap: Spacing.three,
   },
@@ -92,14 +92,15 @@ const styles = StyleSheet.create({
   calories: {
     fontSize: 44,
     lineHeight: 52,
+    letterSpacing: -1.5,
     fontFamily: DisplayFont.semiBold,
     fontWeight: 'normal',
     fontVariant: ['tabular-nums'],
   },
   bar: {
     flexDirection: 'row',
-    height: 10,
-    borderRadius: 5,
+    height: 6,
+    borderRadius: 3,
     overflow: 'hidden',
     gap: 2,
   },
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
   dot: {
     width: 8,
     height: 8,
-    borderRadius: 4,
+    borderRadius: 2,
   },
   secondaryRow: {
     flexDirection: 'row',

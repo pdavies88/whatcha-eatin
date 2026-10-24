@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { StyleSheet, useColorScheme, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
@@ -10,86 +10,73 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Svg, { G } from 'react-native-svg';
+import Svg, { Circle, Defs, Pattern, Rect } from 'react-native-svg';
 
-import { FOOD_SHAPES } from '@/components/brand/food-shapes';
 import { LogoMark } from '@/components/brand/logo-mark';
+import { ThemedText } from '@/components/themed-text';
+import { APP_NAME, APP_TAGLINE } from '@/constants/brand';
+import { DisplayFont, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
-const CELL = 64;
-const ICON_SIZE = 38;
-const ICONS_PER_ROW = 10;
-const ROW_WIDTH = CELL * ICONS_PER_ROW;
-const ROW_COUNT = 7;
-const HERO_HEIGHT = 240;
-/** Food is muted so the logo stays the focus. */
-const PATTERN_OPACITY = { light: 0.55, dark: 0.4 };
+const HERO_HEIGHT = 260;
+const GRID = 22;
+const SCAN_DURATION = 3_600;
 
+/** A dark panel with a dot grid and a sweeping scan line behind the logo and wordmark. */
 export function Hero() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const height = HERO_HEIGHT + insets.top;
 
   return (
-    <View style={[styles.hero, { height: HERO_HEIGHT + insets.top, backgroundColor: theme.heroBackground }]}>
-      <View style={styles.pattern} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-        {Array.from({ length: ROW_COUNT }, (_, row) => (
-          <FoodRow key={row} row={row} />
-        ))}
+    <View style={[styles.hero, { height, backgroundColor: theme.heroBackground }]}>
+      <View style={StyleSheet.absoluteFill} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+        <Svg width="100%" height="100%">
+          <Defs>
+            <Pattern id="dots" width={GRID} height={GRID} patternUnits="userSpaceOnUse">
+              <Circle cx={GRID / 2} cy={GRID / 2} r={1} fill="#FFFFFF" opacity={0.14} />
+            </Pattern>
+          </Defs>
+          <Rect width="100%" height="100%" fill="url(#dots)" />
+        </Svg>
+        <ScanLine height={height} color={theme.tint} />
       </View>
-      <View style={[styles.center, { paddingTop: insets.top }]}>
-        <View style={[styles.halo, { backgroundColor: theme.background }]}>
-          <LogoMark size={96} />
+
+      <View style={[styles.content, { paddingTop: insets.top }]}>
+        <LogoMark size={72} />
+        <View style={styles.words}>
+          <View style={[styles.rule, { backgroundColor: theme.tint }]} />
+          <ThemedText style={styles.wordmark} numberOfLines={1} adjustsFontSizeToFit>
+            {APP_NAME.toUpperCase()}
+          </ThemedText>
+          <ThemedText type="small" style={styles.tagline}>
+            {APP_TAGLINE}
+          </ThemedText>
         </View>
       </View>
     </View>
   );
 }
 
-/** One diagonal band of food. Two copies sit side by side so the loop has no visible seam. */
-function FoodRow({ row }: { row: number }) {
+function ScanLine({ height, color }: { height: number; color: string }) {
   const reduceMotion = useReducedMotion();
-  const progress = useSharedValue(0);
-  const reverse = row % 2 === 1;
-  // Slightly different speeds per row keep the pattern from looking mechanical.
-  const duration = 38_000 + (row % 3) * 7_000;
+  const progress = useSharedValue(0.5);
 
   useEffect(() => {
     if (reduceMotion) return;
-    progress.value = withRepeat(withTiming(1, { duration, easing: Easing.linear }), -1, false);
+    progress.value = 0;
+    progress.value = withRepeat(withTiming(1, { duration: SCAN_DURATION, easing: Easing.inOut(Easing.quad) }), -1, true);
     return () => cancelAnimation(progress);
-  }, [reduceMotion, duration, progress]);
+  }, [reduceMotion, progress]);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: reverse ? -ROW_WIDTH * (1 - progress.value) : -ROW_WIDTH * progress.value }],
+    transform: [{ translateY: progress.value * (height - 2) }],
   }));
 
   return (
-    <Animated.View style={[styles.row, { marginLeft: row % 2 === 0 ? 0 : -CELL / 2 }, animatedStyle]}>
-      <FoodRowCanvas row={row} />
-      <FoodRowCanvas row={row} />
-    </Animated.View>
-  );
-}
-
-function FoodRowCanvas({ row }: { row: number }) {
-  const opacity = PATTERN_OPACITY[useColorScheme() === 'dark' ? 'dark' : 'light'];
-  const scale = ICON_SIZE / 48;
-  const inset = (CELL - ICON_SIZE) / 2;
-
-  return (
-    <Svg width={ROW_WIDTH} height={CELL} opacity={opacity}>
-      {Array.from({ length: ICONS_PER_ROW }, (_, index) => {
-        const Shape = FOOD_SHAPES[(index + row * 3) % FOOD_SHAPES.length];
-        const tilt = ((index * 37 + row * 23) % 50) - 25;
-        return (
-          <G
-            key={index}
-            transform={`translate(${index * CELL + inset} ${inset}) scale(${scale}) rotate(${tilt} 24 24)`}>
-            <Shape />
-          </G>
-        );
-      })}
-    </Svg>
+    <Animated.View
+      style={[styles.scanLine, { backgroundColor: color, boxShadow: `0 0 18px 4px ${color}66` }, animatedStyle]}
+    />
   );
 }
 
@@ -97,27 +84,37 @@ const styles = StyleSheet.create({
   hero: {
     overflow: 'hidden',
   },
-  pattern: {
+  scanLine: {
     position: 'absolute',
-    top: -CELL * 1.5,
-    left: -CELL * 3,
-    transform: [{ rotate: '-20deg' }],
+    left: 0,
+    right: 0,
+    height: 2,
+    opacity: 0.55,
   },
-  row: {
-    flexDirection: 'row',
-    width: ROW_WIDTH * 2,
-  },
-  center: {
+  content: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
+    paddingHorizontal: Spacing.four,
+    paddingBottom: Spacing.four,
+    gap: Spacing.three,
   },
-  halo: {
-    width: 136,
-    height: 136,
-    borderRadius: 68,
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+  words: {
+    gap: Spacing.one,
+  },
+  rule: {
+    width: 32,
+    height: 4,
+    marginBottom: Spacing.one,
+  },
+  wordmark: {
+    color: '#F5F5F2',
+    fontSize: 40,
+    lineHeight: 44,
+    letterSpacing: -1.5,
+    fontFamily: DisplayFont.bold,
+    fontWeight: 'normal',
+  },
+  tagline: {
+    color: '#9A9A95',
   },
 });

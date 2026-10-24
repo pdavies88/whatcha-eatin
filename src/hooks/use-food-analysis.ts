@@ -1,24 +1,29 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { useSettings } from '@/context/settings-context';
-import { analyzeFoodImage } from '@/lib/ai/analyze';
+import { analyzeFood } from '@/lib/ai/analyze';
 import { PROVIDERS } from '@/lib/ai/providers';
 import { prepareImageForAnalysis, type PreparedImage } from '@/lib/image';
 import type { NutritionAnalysis } from '@/lib/nutrition/schema';
 
 export type PickedPhoto = { uri: string; width: number; height: number };
 
+/** What the user gave us to look up: a photo of the meal, or a typed description of it. */
+export type FoodInput = { kind: 'photo'; photo: PickedPhoto } | { kind: 'text'; description: string };
+
 export type AnalysisState =
   | { status: 'idle' }
-  | { status: 'analyzing'; photo: PickedPhoto }
+  | { status: 'analyzing'; input: FoodInput }
   | {
       status: 'success';
-      photo: PreparedImage;
+      input: FoodInput;
+      /** The resized photo that was sent. Missing for typed meals. */
+      photo?: PreparedImage;
       analysis: NutritionAnalysis;
       providerName: string;
       model: string;
     }
-  | { status: 'error'; photo: PickedPhoto; message: string };
+  | { status: 'error'; input: FoodInput; message: string };
 
 export function useFoodAnalysis() {
   const { activeModel } = useSettings();
@@ -28,9 +33,9 @@ export function useFoodAnalysis() {
   // Cancel any in-flight request when the screen unmounts.
   useEffect(() => () => abortRef.current?.abort(), []);
 
-  const analyze = async (photo: PickedPhoto, context?: string) => {
+  const analyze = async (input: FoodInput, context?: string) => {
     if (!activeModel) {
-      setState({ status: 'error', photo, message: 'Add an API key in Settings before analyzing photos.' });
+      setState({ status: 'error', input, message: 'Add an API key in Settings before looking up meals.' });
       return;
     }
 
@@ -39,20 +44,22 @@ export function useFoodAnalysis() {
     abortRef.current = controller;
 
     const { providerId, model } = activeModel;
-    setState({ status: 'analyzing', photo });
+    setState({ status: 'analyzing', input });
 
     try {
-      const prepared = await prepareImageForAnalysis(photo.uri, photo);
-      const analysis = await analyzeFoodImage({
+      const prepared = input.kind === 'photo' ? await prepareImageForAnalysis(input.photo.uri, input.photo) : undefined;
+      const analysis = await analyzeFood({
         providerId,
         model,
-        image: { base64: prepared.base64, mimeType: prepared.mimeType },
+        image: prepared ? { base64: prepared.base64, mimeType: prepared.mimeType } : undefined,
+        description: input.kind === 'text' ? input.description : undefined,
         context,
         signal: controller.signal,
       });
       if (controller.signal.aborted) return;
       setState({
         status: 'success',
+        input,
         photo: prepared,
         analysis,
         providerName: PROVIDERS[providerId].name,
@@ -61,7 +68,7 @@ export function useFoodAnalysis() {
     } catch (error) {
       if (controller.signal.aborted) return;
       const message = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
-      setState({ status: 'error', photo, message });
+      setState({ status: 'error', input, message });
     }
   };
 

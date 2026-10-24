@@ -5,11 +5,13 @@ import type { ModelOption, ProviderId } from './providers';
 
 export type ImageInput = { base64: string; mimeType: string };
 
+/** Either a photo (with optional notes in `context`) or a typed `description` of the meal. */
 export type AnalysisRequest = {
   apiKey: string;
   model: string;
-  image: ImageInput;
+  image?: ImageInput;
   context?: string;
+  description?: string;
 };
 
 export type HttpRequest = { url: string; init: RequestInit };
@@ -38,7 +40,7 @@ const byId = (a: ModelOption, b: ModelOption) => a.id.localeCompare(b.id);
 
 /** OpenAI's Responses API. */
 const openai: ProviderAdapter = {
-  buildRequest: ({ apiKey, model, image, context }) => ({
+  buildRequest: ({ apiKey, model, image, context, description }) => ({
     url: 'https://api.openai.com/v1/responses',
     init: {
       method: 'POST',
@@ -50,8 +52,8 @@ const openai: ProviderAdapter = {
           {
             role: 'user',
             content: [
-              { type: 'input_text', text: buildUserPrompt(context) },
-              { type: 'input_image', image_url: dataUrl(image), detail: 'auto' },
+              { type: 'input_text', text: buildUserPrompt({ context, description }) },
+              ...(image ? [{ type: 'input_image', image_url: dataUrl(image), detail: 'auto' }] : []),
             ],
           },
         ],
@@ -86,7 +88,7 @@ const openai: ProviderAdapter = {
 
 /** Anthropic's Messages API. */
 const anthropic: ProviderAdapter = {
-  buildRequest: ({ apiKey, model, image, context }) => ({
+  buildRequest: ({ apiKey, model, image, context, description }) => ({
     url: 'https://api.anthropic.com/v1/messages',
     init: {
       method: 'POST',
@@ -99,8 +101,10 @@ const anthropic: ProviderAdapter = {
           {
             role: 'user',
             content: [
-              { type: 'image', source: { type: 'base64', media_type: image.mimeType, data: image.base64 } },
-              { type: 'text', text: buildUserPrompt(context) },
+              ...(image
+                ? [{ type: 'image', source: { type: 'base64', media_type: image.mimeType, data: image.base64 } }]
+                : []),
+              { type: 'text', text: buildUserPrompt({ context, description }) },
             ],
           },
         ],
@@ -130,7 +134,7 @@ const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta';
 
 /** Google's Gemini API (generateContent). */
 const gemini: ProviderAdapter = {
-  buildRequest: ({ apiKey, model, image, context }) => ({
+  buildRequest: ({ apiKey, model, image, context, description }) => ({
     url: `${GEMINI_BASE_URL}/models/${encodeURIComponent(model)}:generateContent`,
     init: {
       method: 'POST',
@@ -141,8 +145,8 @@ const gemini: ProviderAdapter = {
           {
             role: 'user',
             parts: [
-              { text: buildUserPrompt(context) },
-              { inline_data: { mime_type: image.mimeType, data: image.base64 } },
+              { text: buildUserPrompt({ context, description }) },
+              ...(image ? [{ inline_data: { mime_type: image.mimeType, data: image.base64 } }] : []),
             ],
           },
         ],
@@ -181,7 +185,7 @@ function chatCompletions(
   } = {},
 ): ProviderAdapter {
   return {
-    buildRequest: ({ apiKey, model, image, context }) => ({
+    buildRequest: ({ apiKey, model, image, context, description }) => ({
       url: `${baseUrl}/chat/completions`,
       init: {
         method: 'POST',
@@ -194,8 +198,8 @@ function chatCompletions(
             {
               role: 'user',
               content: [
-                { type: 'text', text: buildUserPrompt(context) },
-                { type: 'image_url', image_url: { url: dataUrl(image) } },
+                { type: 'text', text: buildUserPrompt({ context, description }) },
+                ...(image ? [{ type: 'image_url', image_url: { url: dataUrl(image) } }] : []),
               ],
             },
           ],

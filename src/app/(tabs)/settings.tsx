@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     gap: Spacing.three,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.three,
-    borderRadius: Spacing.three,
+    borderRadius: 12,
     borderWidth: 2,
   },
   radio: {
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   },
   input: {
     minHeight: 48,
-    borderRadius: Spacing.three,
+    borderRadius: 12,
     paddingHorizontal: Spacing.three,
     fontSize: 16,
   },

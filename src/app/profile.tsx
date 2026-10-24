@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
-import { Alert, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, TextInput, View, type TextInputInstance } from 'react-native';
 
 import { Button } from '@/components/button';
 import { KeyboardAwareScrollView } from '@/components/keyboard-aware-scroll-view';
@@ -45,7 +45,7 @@ export default function ProfileScreen() {
   );
   const [activity, setActivity] = useState<ActivityLevel>(profile?.activity ?? 'light');
   const [goal, setGoal] = useState<Goal>(profile?.goal ?? 'maintain');
-  const inchesRef = useRef<TextInput>(null);
+  const inchesRef = useRef<TextInputInstance>(null);
 
   // Feet is a single digit, so move straight on to inches once it's typed.
   const changeFeet = (text: string) => {
@@ -317,12 +317,12 @@ const styles = StyleSheet.create({
   },
   input: {
     minHeight: 48,
-    borderRadius: Spacing.three,
+    borderRadius: 12,
     paddingHorizontal: Spacing.three,
     fontSize: 17,
   },
   choice: {
-    borderRadius: Spacing.three,
+    borderRadius: 12,
     borderWidth: 2,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,

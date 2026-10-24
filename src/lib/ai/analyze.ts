@@ -9,14 +9,16 @@ import { analyzeWithAdapter, fetchJson } from './request';
 export type AnalyzeOptions = {
   providerId: ProviderId;
   model: string;
-  image: ImageInput;
+  /** The meal photo. Leave it out and pass `description` to look up a typed meal instead. */
+  image?: ImageInput;
   context?: string;
+  description?: string;
   signal?: AbortSignal;
 };
 
-/** Sends the photo straight from the device to the user's chosen provider with their own key. */
-export async function analyzeFoodImage(options: AnalyzeOptions): Promise<NutritionAnalysis> {
-  const { providerId, model, image, context, signal } = options;
+/** Sends the photo or description straight from the device to the user's chosen provider with their own key. */
+export async function analyzeFood(options: AnalyzeOptions): Promise<NutritionAnalysis> {
+  const { providerId, model, image, context, description, signal } = options;
   const provider = PROVIDERS[providerId];
 
   const apiKey = await getApiKey(providerId);
@@ -24,7 +26,7 @@ export async function analyzeFoodImage(options: AnalyzeOptions): Promise<Nutriti
     throw new AnalysisError('auth', `Add a ${provider.name} API key in Settings to use this provider.`);
   }
 
-  return analyzeWithAdapter(ADAPTERS[providerId], provider.name, { apiKey, model, image, context }, signal);
+  return analyzeWithAdapter(ADAPTERS[providerId], provider.name, { apiKey, model, image, context, description }, signal);
 }
 
 export async function listProviderModels(providerId: ProviderId, signal?: AbortSignal): Promise<ModelOption[]> {

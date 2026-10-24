@@ -49,12 +49,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 48,
     lineHeight: 56,
+    letterSpacing: -1.5,
     fontFamily: DisplayFont.semiBold,
     fontWeight: 'normal',
   },
   subtitle: {
     fontSize: 32,
     lineHeight: 44,
+    letterSpacing: -0.8,
     fontFamily: DisplayFont.semiBold,
     fontWeight: 'normal',
   },

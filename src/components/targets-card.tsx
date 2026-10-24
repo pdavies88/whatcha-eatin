@@ -142,7 +142,7 @@ function PlanRow({ plan, units, selected }: { plan: DailyPlan; units: UnitSystem
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: Spacing.four,
+    borderRadius: 16,
     padding: Spacing.four,
     gap: Spacing.three,
   },
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.three,
-    borderRadius: Spacing.three,
+    borderRadius: 12,
     borderWidth: 2,
     padding: Spacing.three,
   },

@@ -9,34 +9,34 @@ import { Platform } from 'react-native';
 
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-    tint: '#C9401F',
-    onTint: '#ffffff',
-    danger: '#DC2626',
-    border: '#E0E1E6',
-    protein: '#2563EB',
-    carbs: '#D97706',
-    fat: '#DB2777',
-    heroBackground: '#FFF1E4',
+    text: '#0A0A0A',
+    background: '#F5F5F2',
+    backgroundElement: '#FFFFFF',
+    backgroundSelected: '#E7E7E3',
+    textSecondary: '#5C5C58',
+    tint: '#E8501A',
+    onTint: '#FFFFFF',
+    danger: '#D92D20',
+    border: '#DEDED9',
+    protein: '#2F6BFF',
+    carbs: '#E8A100',
+    fat: '#E0287A',
+    heroBackground: '#0B0B0B',
   },
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-    tint: '#FF8A65',
-    onTint: '#2A0E05',
-    danger: '#F87171',
-    border: '#2E3135',
-    protein: '#60A5FA',
-    carbs: '#FBBF24',
-    fat: '#F472B6',
-    heroBackground: '#2B1720',
+    text: '#F5F5F2',
+    background: '#0B0B0B',
+    backgroundElement: '#161616',
+    backgroundSelected: '#262626',
+    textSecondary: '#9A9A95',
+    tint: '#FF6A2B',
+    onTint: '#0B0B0B',
+    danger: '#FF5A4E',
+    border: '#2A2A2A',
+    protein: '#5B8CFF',
+    carbs: '#FFC233',
+    fat: '#FF4F9A',
+    heroBackground: '#0B0B0B',
   },
 } as const;
 
@@ -68,13 +68,13 @@ export const Fonts = Platform.select({
 });
 
 /**
- * Fredoka gives headings and buttons a rounded, playful look. Body text stays in the system
- * font for legibility. Each weight is its own family, so don't combine these with fontWeight.
+ * Space Grotesk gives headings, numbers and buttons a sharp, technical look. Body text stays in
+ * the system font for legibility. Each weight is its own family, so don't combine these with fontWeight.
  */
 export const DisplayFont = {
-  medium: 'Fredoka_500Medium',
-  semiBold: 'Fredoka_600SemiBold',
-  bold: 'Fredoka_700Bold',
+  medium: 'SpaceGrotesk_500Medium',
+  semiBold: 'SpaceGrotesk_600SemiBold',
+  bold: 'SpaceGrotesk_700Bold',
 } as const;
 
 export const Spacing = {

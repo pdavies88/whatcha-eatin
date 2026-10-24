@@ -2,20 +2,21 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, Keyboard, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Hero } from '@/components/brand/hero';
 import { Button } from '@/components/button';
 import { KeyboardAwareScrollView } from '@/components/keyboard-aware-scroll-view';
 import { NutritionDetails } from '@/components/nutrition-details';
+import { SegmentedControl } from '@/components/segmented-control';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { APP_NAME, APP_TAGLINE } from '@/constants/brand';
+import { APP_NAME } from '@/constants/brand';
 import { BottomTabInset, DisplayFont, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useMealHistory } from '@/context/meal-history-context';
 import { useSettings } from '@/context/settings-context';
-import { useFoodAnalysis, type PickedPhoto } from '@/hooks/use-food-analysis';
+import { useFoodAnalysis, type FoodInput, type PickedPhoto } from '@/hooks/use-food-analysis';
 import { useTheme } from '@/hooks/use-theme';
 import { PROVIDERS } from '@/lib/ai/providers';
 import { persistMealPhoto } from '@/lib/image';
@@ -31,17 +32,21 @@ export default function ScanScreen() {
   const { activeModel, keysLoaded } = useSettings();
   const { addMeal } = useMealHistory();
   const { state, analyze, reset } = useFoodAnalysis();
-  const [context, setContext] = useState('');
+  const [mode, setMode] = useState<LogMode>('type');
+  const [description, setDescription] = useState('');
+  const [photoNotes, setPhotoNotes] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   // Set by the barcode screen when a product isn't in Open Food Facts, so the user can photograph its label.
   const { labelFor } = useLocalSearchParams<{ labelFor?: string }>();
+  // Photographing a label only makes sense with the camera.
+  const activeMode: LogMode = labelFor ? 'snap' : mode;
 
   const analysisContext = () =>
     [
       labelFor
         ? `This is a photo of the Nutrition Facts label for ${labelFor}. Use the label's values for one serving.`
         : '',
-      context,
+      photoNotes,
     ]
       .filter(Boolean)
       .join(' ');
@@ -50,8 +55,18 @@ export default function ScanScreen() {
     const asset = result.canceled ? undefined : result.assets[0];
     if (!asset) return;
     const photo: PickedPhoto = { uri: asset.uri, width: asset.width, height: asset.height };
-    void analyze(photo, analysisContext());
+    void analyze({ kind: 'photo', photo }, analysisContext());
   };
+
+  const lookUpText = () => {
+    const typed = description.trim();
+    if (!typed) return;
+    Keyboard.dismiss();
+    void analyze({ kind: 'text', description: typed });
+  };
+
+  // Typed meals carry everything in the description, so only photos get the notes as extra context.
+  const retry = (input: FoodInput) => analyze(input, input.kind === 'photo' ? analysisContext() : undefined);
 
   const clearLabelPrompt = () => router.setParams({ labelFor: undefined });
 
@@ -61,16 +76,13 @@ export default function ScanScreen() {
       Alert.alert('Camera access needed', 'Allow camera access in Settings to photograph your food.');
       return;
     }
+    Keyboard.dismiss();
     try {
       handlePicked(await ImagePicker.launchCameraAsync(PICKER_OPTIONS));
     } catch {
       // The iOS Simulator has no camera.
-      Alert.alert('Camera unavailable', 'Choose a photo from your library instead.');
+      Alert.alert('Camera unavailable', 'Type what you ate instead.');
     }
-  };
-
-  const choosePhoto = async () => {
-    handlePicked(await ImagePicker.launchImageLibraryAsync(PICKER_OPTIONS));
   };
 
   const saveMeal = async () => {
@@ -78,16 +90,19 @@ export default function ScanScreen() {
     setIsSaving(true);
     try {
       const id = `${Date.now()}`;
-      const photoFile = await persistMealPhoto(state.photo.uri, id);
+      const photoFile = state.photo ? await persistMealPhoto(state.photo.uri, id) : undefined;
       addMeal({
         id,
         createdAt: Date.now(),
         photoFile,
+        source: state.input.kind,
+        description: state.input.kind === 'text' ? state.input.description : undefined,
         providerName: state.providerName,
         model: state.model,
         analysis: state.analysis,
       });
-      setContext('');
+      if (state.input.kind === 'text') setDescription('');
+      else setPhotoNotes('');
       clearLabelPrompt();
       reset();
     } catch {
@@ -112,13 +127,6 @@ export default function ScanScreen() {
           <>
             <Hero />
             <View style={styles.content}>
-              <View style={styles.intro}>
-                <ThemedText style={styles.appName}>{APP_NAME}</ThemedText>
-                <ThemedText themeColor="textSecondary" style={styles.tagline}>
-                  {APP_TAGLINE}
-                </ThemedText>
-              </View>
-
               {keysLoaded && !activeModel ? (
                 <>
                   <SetupCard />
@@ -142,12 +150,61 @@ export default function ScanScreen() {
 
               {activeModel && provider ? (
                 <>
+                  <View style={styles.section}>
+                    {labelFor ? null : (
+                      <SegmentedControl
+                        options={MODE_OPTIONS}
+                        value={activeMode}
+                        onChange={setMode}
+                        accessibilityLabel="How to log your meal"
+                      />
+                    )}
+
+                    {activeMode === 'type' ? (
+                      <>
+                        <Eyebrow>What’d you eat?</Eyebrow>
+                        <TextInput
+                          value={description}
+                          onChangeText={setDescription}
+                          placeholder="2 scrambled eggs, sourdough toast with butter, oat latte"
+                          placeholderTextColor={theme.textSecondary}
+                          maxLength={300}
+                          multiline
+                          style={[
+                            styles.input,
+                            { color: theme.text, backgroundColor: theme.backgroundElement, borderColor: theme.border },
+                          ]}
+                          accessibilityLabel="Describe what you ate"
+                        />
+                        <Button title="Look it up" onPress={lookUpText} disabled={!description.trim()} />
+                      </>
+                    ) : (
+                      <>
+                        <Eyebrow>Anything the photo won’t show?</Eyebrow>
+                        <TextInput
+                          value={photoNotes}
+                          onChangeText={setPhotoNotes}
+                          placeholder="Optional, e.g. “cooked in olive oil, large bowl, ate half”"
+                          placeholderTextColor={theme.textSecondary}
+                          maxLength={300}
+                          multiline
+                          style={[
+                            styles.input,
+                            { color: theme.text, backgroundColor: theme.backgroundElement, borderColor: theme.border },
+                          ]}
+                          accessibilityLabel="Notes to send with the photo"
+                        />
+                        <Button title="Take photo" onPress={takePhoto} />
+                      </>
+                    )}
+                  </View>
+
+                  <Button title="Scan a barcode" variant="secondary" onPress={openBarcodeScanner} />
+
                   <Link href="/settings" asChild>
                     <Pressable accessibilityRole="button" accessibilityHint="Opens AI model settings">
                       <ThemedView type="backgroundElement" style={styles.modelChip}>
-                        <ThemedText type="small" themeColor="textSecondary">
-                          Model
-                        </ThemedText>
+                        <View style={[styles.liveDot, { backgroundColor: theme.tint }]} />
                         <ThemedText type="smallBold" numberOfLines={1} style={styles.modelName}>
                           {provider.name} · {modelLabel}
                         </ThemedText>
@@ -157,35 +214,25 @@ export default function ScanScreen() {
                       </ThemedView>
                     </Pressable>
                   </Link>
-
-                  <TextInput
-                    value={context}
-                    onChangeText={setContext}
-                    placeholder="Optional notes, e.g. “cooked in olive oil, large bowl”"
-                    placeholderTextColor={theme.textSecondary}
-                    maxLength={300}
-                    multiline
-                    style={[styles.input, { color: theme.text, backgroundColor: theme.backgroundElement }]}
-                    accessibilityLabel="Notes about the meal"
-                  />
-
-                  <View style={styles.actions}>
-                    <Button title="Take photo" onPress={takePhoto} />
-                    <Button title="Choose from library" variant="secondary" onPress={choosePhoto} />
-                    <Button title="Scan a barcode" variant="secondary" onPress={openBarcodeScanner} />
-                  </View>
                 </>
               ) : null}
             </View>
           </>
         ) : (
           <View style={[styles.content, { paddingTop: insets.top + Spacing.three }]}>
-            <Image
-              source={{ uri: state.photo.uri }}
-              style={styles.photo}
-              contentFit="cover"
-              accessibilityLabel="Photo of your meal"
-            />
+            {state.input.kind === 'photo' ? (
+              <Image
+                source={{ uri: state.input.photo.uri }}
+                style={styles.photo}
+                contentFit="cover"
+                accessibilityLabel="Photo of your meal"
+              />
+            ) : (
+              <View style={[styles.quote, { borderLeftColor: theme.tint }]}>
+                <Eyebrow>You said</Eyebrow>
+                <ThemedText style={styles.quoteText}>{state.input.description}</ThemedText>
+              </View>
+            )}
 
             {state.status === 'analyzing' ? (
               <View style={styles.status}>
@@ -200,7 +247,7 @@ export default function ScanScreen() {
             {state.status === 'error' ? (
               <View style={styles.status}>
                 <ThemedText style={{ color: theme.danger }}>{state.message}</ThemedText>
-                <Button title="Try again" onPress={() => analyze(state.photo, analysisContext())} />
+                <Button title="Try again" onPress={() => retry(state.input)} />
                 <Button title="Start over" variant="secondary" onPress={reset} />
               </View>
             ) : null}
@@ -223,7 +270,23 @@ export default function ScanScreen() {
   );
 }
 
+type LogMode = 'type' | 'snap';
+
+const MODE_OPTIONS: { value: LogMode; label: string }[] = [
+  { value: 'type', label: 'Type it' },
+  { value: 'snap', label: 'Snap it' },
+];
+
 const openBarcodeScanner = () => router.push('/barcode');
+
+/** A small uppercase label that opens a section. */
+function Eyebrow({ children }: { children: string }) {
+  return (
+    <ThemedText themeColor="textSecondary" style={styles.eyebrow}>
+      {children.toUpperCase()}
+    </ThemedText>
+  );
+}
 
 /** First-run prompt shown until the user adds an API key. */
 function SetupCard() {
@@ -253,47 +316,50 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: Spacing.four,
-    gap: Spacing.three,
+    gap: Spacing.four,
     width: '100%',
     maxWidth: MaxContentWidth,
     alignSelf: 'center',
   },
-  intro: {
-    gap: Spacing.one,
-    alignItems: 'center',
-    paddingBottom: Spacing.two,
+  section: {
+    gap: Spacing.two,
   },
-  appName: {
-    fontSize: 40,
-    lineHeight: 48,
-    fontFamily: DisplayFont.bold,
+  eyebrow: {
+    fontSize: 12,
+    lineHeight: 16,
+    letterSpacing: 1.6,
+    fontFamily: DisplayFont.semiBold,
     fontWeight: 'normal',
   },
-  tagline: {
-    textAlign: 'center',
-  },
   setupCard: {
-    borderRadius: Spacing.four,
+    borderRadius: 16,
     padding: Spacing.four,
     gap: Spacing.three,
+  },
+  input: {
+    minHeight: 96,
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: Spacing.three,
+    fontSize: 17,
+    lineHeight: 24,
+    textAlignVertical: 'top',
   },
   modelChip: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.two,
-    borderRadius: Spacing.three,
+    borderRadius: 12,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.three,
   },
+  liveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
   modelName: {
     flex: 1,
-  },
-  input: {
-    minHeight: 80,
-    borderRadius: Spacing.three,
-    padding: Spacing.three,
-    fontSize: 16,
-    textAlignVertical: 'top',
   },
   actions: {
     gap: Spacing.two,
@@ -301,7 +367,20 @@ const styles = StyleSheet.create({
   photo: {
     width: '100%',
     aspectRatio: 4 / 3,
-    borderRadius: Spacing.four,
+    borderRadius: 16,
+  },
+  quote: {
+    borderLeftWidth: 4,
+    paddingLeft: Spacing.three,
+    paddingVertical: Spacing.one,
+    gap: Spacing.two,
+  },
+  quoteText: {
+    fontSize: 22,
+    lineHeight: 30,
+    letterSpacing: -0.4,
+    fontFamily: DisplayFont.medium,
+    fontWeight: 'normal',
   },
   status: {
     gap: Spacing.three,

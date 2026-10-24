@@ -114,6 +114,19 @@ describe.each(['xai', 'openrouter'] as const)('%s chat completions adapter', (pr
   });
 });
 
+describe('typed meal descriptions', () => {
+  const textRequest = { apiKey: 'test-key', model: 'test-model', description: '2 eggs and toast' };
+
+  it.each(['openai', 'anthropic', 'gemini', 'xai', 'openrouter'] as const)(
+    '%s sends the description and no image',
+    (providerId) => {
+      const raw = ADAPTERS[providerId].buildRequest(textRequest).init.body as string;
+      expect(raw).toContain('2 eggs and toast');
+      expect(raw).not.toMatch(/input_image|"image"|inline_data|image_url/);
+    },
+  );
+});
+
 it('filters OpenRouter models to those that accept images', () => {
   const models = ADAPTERS.openrouter.parseModelList({
     data: [

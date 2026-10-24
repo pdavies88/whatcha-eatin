@@ -10,10 +10,12 @@ const LEGACY_HISTORY_KEY = 'mealHistory.v1';
 export const MealEntrySchema = z.object({
   id: z.string(),
   createdAt: z.number(),
-  /** File name in the meal-photos folder. Missing for scanned products that have no photo. */
+  /** File name in the meal-photos folder. Missing for typed meals and for scanned products that have no photo. */
   photoFile: z.string().optional(),
   /** How the meal was logged. Older entries predate barcode scanning, so they default to a photo. */
-  source: z.enum(['photo', 'barcode']).default('photo'),
+  source: z.enum(['photo', 'barcode', 'text']).default('photo'),
+  /** What the user typed, for meals logged from a description. */
+  description: z.string().optional(),
   barcode: z.string().optional(),
   providerName: z.string(),
   model: z.string(),

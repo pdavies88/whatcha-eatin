@@ -41,7 +41,7 @@ export function Button({ title, variant = 'primary', loading = false, disabled, 
 const styles = StyleSheet.create({
   button: {
     minHeight: 52,
-    borderRadius: Spacing.three,
+    borderRadius: 12,
     paddingHorizontal: Spacing.four,
     alignItems: 'center',
     justifyContent: 'center',
@@ -50,5 +50,6 @@ const styles = StyleSheet.create({
     fontFamily: DisplayFont.semiBold,
     fontWeight: 'normal',
     fontSize: 17,
+    letterSpacing: 0.2,
   },
 });

@@ -12,5 +12,8 @@ export type ThemedViewProps = ViewProps & {
 export function ThemedView({ style, lightColor, darkColor, type, ...otherProps }: ThemedViewProps) {
   const theme = useTheme();
 
-  return <View style={[{ backgroundColor: theme[type ?? 'background'] }, style]} {...otherProps} />;
+  // Raised surfaces get a hairline edge, which keeps cards crisp against the flat background.
+  const edge = type === 'backgroundElement' ? { borderWidth: 1, borderColor: theme.border } : null;
+
+  return <View style={[{ backgroundColor: theme[type ?? 'background'] }, edge, style]} {...otherProps} />;
 }

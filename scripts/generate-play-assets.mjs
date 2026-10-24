@@ -9,8 +9,8 @@ import { Resvg } from '@resvg/resvg-js';
 import { buildLogoSvg } from '../src/components/brand/logo-svg.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const fredoka = (weight) =>
-  join(root, `node_modules/@expo-google-fonts/fredoka/${weight}/Fredoka_${weight}.ttf`);
+const spaceGrotesk = (weight) =>
+  join(root, `node_modules/@expo-google-fonts/space-grotesk/${weight}/SpaceGrotesk_${weight}.ttf`);
 
 // Feature graphic: 1024 × 500, shown at the top of the Play listing. Matches the app's hero.
 const LOGO_SIZE = 220;
@@ -19,26 +19,31 @@ const logo = buildLogoSvg().replace(
   `<svg x="${150 - LOGO_SIZE / 2}" y="${250 - LOGO_SIZE / 2}" width="${LOGO_SIZE}" height="${LOGO_SIZE}" viewBox="0 0 64 64">`,
 );
 
-const dots = [
-  [520, 70, 10, '#FFB37A'], [960, 90, 14, '#FF8FA3'], [880, 430, 12, '#FFD36E'],
-  [610, 450, 8, '#9ED9A0'], [40, 60, 9, '#FFD36E'], [70, 455, 12, '#9ED9A0'],
-  [990, 300, 7, '#FFB37A'], [330, 470, 8, '#FF8FA3'],
-];
+// A faint dot grid, the same texture as the app's hero.
+const grid = Array.from({ length: 21 * 11 }, (_, i) => {
+  const x = 12 + (i % 21) * 50;
+  const y = 0 + Math.floor(i / 21) * 50;
+  return `<circle cx="${x}" cy="${y}" r="1.6" fill="#FFFFFF" opacity="0.12"/>`;
+}).join('');
 
 const featureGraphic = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500">
-  <rect width="1024" height="500" fill="#FFF1E4"/>
-  ${dots.map(([x, y, r, c]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity="0.7"/>`).join('\n  ')}
-  <circle cx="150" cy="250" r="140" fill="#FFFFFF"/>
+  <rect width="1024" height="500" fill="#0B0B0B"/>
+  ${grid}
   ${logo}
-  <text x="330" y="235" font-family="Fredoka" font-weight="700" font-size="84" fill="#2B1B17">Whatcha Eatin’</text>
-  <text x="334" y="305" font-family="Fredoka" font-weight="500" font-size="38" fill="#C9401F">Snap a meal. See your macros.</text>
-  <text x="334" y="360" font-family="Fredoka" font-weight="500" font-size="28" fill="#6B5A55">Photos or barcodes · daily targets · no account</text>
+  <rect x="334" y="150" width="56" height="6" fill="#FF6A2B"/>
+  <text x="330" y="245" font-family="Space Grotesk" font-weight="700" font-size="84" letter-spacing="-3" fill="#F5F5F2">WHATCHA EATIN’</text>
+  <text x="334" y="305" font-family="Space Grotesk" font-weight="500" font-size="36" fill="#FF6A2B">Snap it. Type it. Scan it.</text>
+  <text x="334" y="360" font-family="Space Grotesk" font-weight="500" font-size="26" fill="#9A9A95">Photo, text or barcode · no account</text>
 </svg>`;
 
 const outDir = join(root, 'store/android');
 mkdirSync(outDir, { recursive: true });
 const png = new Resvg(featureGraphic, {
-  font: { fontFiles: [fredoka('700Bold'), fredoka('500Medium')], loadSystemFonts: false, defaultFontFamily: 'Fredoka' },
+  font: {
+    fontFiles: [spaceGrotesk('700Bold'), spaceGrotesk('500Medium')],
+    loadSystemFonts: false,
+    defaultFontFamily: 'Space Grotesk',
+  },
 }).render().asPng();
 writeFileSync(join(outDir, 'feature-graphic-1024x500.png'), png);
 console.log('wrote store/android/feature-graphic-1024x500.png');

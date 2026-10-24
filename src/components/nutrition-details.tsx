@@ -76,11 +76,12 @@ const styles = StyleSheet.create({
   mealName: {
     fontSize: 26,
     lineHeight: 32,
+    letterSpacing: -0.5,
     fontFamily: DisplayFont.semiBold,
     fontWeight: 'normal',
   },
   card: {
-    borderRadius: Spacing.four,
+    borderRadius: 16,
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.two,
     gap: Spacing.one,

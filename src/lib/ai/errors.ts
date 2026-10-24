@@ -38,7 +38,7 @@ export function errorForStatus(status: number, providerName: string, detail?: st
   if (status === 400 || status === 404 || status === 422) {
     return new AnalysisError(
       'bad_request',
-      `${providerName} could not handle the request. The selected model may not exist or may not support images.${suffix}`,
+      `${providerName} could not handle the request. The selected model may not exist or may not support this kind of request.${suffix}`,
       status,
     );
   }

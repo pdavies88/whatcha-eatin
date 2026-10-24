@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
   cameraFrame: {
     width: '100%',
     aspectRatio: 1,
-    borderRadius: Spacing.four,
+    borderRadius: 16,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
   reticle: {
     width: '75%',
     height: '35%',
-    borderRadius: Spacing.three,
+    borderRadius: 12,
     borderWidth: 3,
     borderColor: '#FFFFFF',
   },
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     minHeight: 52,
-    borderRadius: Spacing.three,
+    borderRadius: 12,
     paddingHorizontal: Spacing.three,
     fontSize: 17,
     fontVariant: ['tabular-nums'],
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
   productImageFrame: {
     width: '100%',
     aspectRatio: 4 / 3,
-    borderRadius: Spacing.four,
+    borderRadius: 16,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.two,
-    borderRadius: Spacing.three,
+    borderRadius: 12,
     padding: Spacing.three,
   },
   flex: {
