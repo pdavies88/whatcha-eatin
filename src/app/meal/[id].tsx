@@ -1,12 +1,12 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { MealPhoto } from '@/components/meal-photo';
 import { NutritionDetails } from '@/components/nutrition-details';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { DisplayFont, MaxContentWidth, Spacing } from '@/constants/theme';
+import { DisplayFont, MaxContentWidth, MaxPhotoShare, Spacing } from '@/constants/theme';
 import { useMealHistory } from '@/context/meal-history-context';
 import { useTheme } from '@/hooks/use-theme';
 import { OPEN_FOOD_FACTS_CREDIT } from '@/lib/barcode/open-food-facts';
@@ -17,6 +17,7 @@ export default function MealDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { meals, removeMeal } = useMealHistory();
   const theme = useTheme();
+  const window = useWindowDimensions();
   const meal = meals.find((entry) => entry.id === id);
 
   if (!meal) {
@@ -53,7 +54,7 @@ export default function MealDetailScreen() {
             <ThemedText style={styles.quoteText}>{meal.description}</ThemedText>
           </View>
         ) : (
-          <MealPhoto meal={meal} style={styles.photo} iconSize={64} />
+          <MealPhoto meal={meal} style={[styles.photo, { maxHeight: window.height * MaxPhotoShare }]} iconSize={64} />
         )}
         <NutritionDetails analysis={meal.analysis} />
         <ThemedText type="small" themeColor="textSecondary">
@@ -88,6 +89,7 @@ const styles = StyleSheet.create({
   },
   photo: {
     width: '100%',
+    alignSelf: 'center',
     aspectRatio: 4 / 3,
     borderRadius: 16,
   },

@@ -96,3 +96,5 @@ export const Spacing = {
 
 export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
 export const MaxContentWidth = 800;
+/** Photos never take more than this share of the window's height, so wide windows still show what's below them. */
+export const MaxPhotoShare = 0.45;

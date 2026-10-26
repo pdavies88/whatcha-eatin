@@ -53,7 +53,8 @@ export default function GeminiKeyScreen() {
   return (
     <ThemedView style={styles.container}>
       <KeyboardAwareScrollView
-        contentContainerStyle={styles.content}>
+        contentContainerStyle={styles.content}
+        contentInsetAdjustmentBehavior="automatic">
         <ThemedText themeColor="textSecondary">
           {APP_NAME} has no servers and no accounts. You bring your own AI key. Google gives Gemini keys away
           for free, with daily limits that are plenty for logging meals. No credit card is needed.

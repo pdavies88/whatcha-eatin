@@ -19,7 +19,7 @@ import { KeyboardAwareScrollView } from '@/components/keyboard-aware-scroll-view
 import { MacroSummary } from '@/components/macro-summary';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { DisplayFont, MaxContentWidth, Spacing } from '@/constants/theme';
+import { DisplayFont, MaxContentWidth, MaxPhotoShare, Spacing } from '@/constants/theme';
 import { useMealHistory } from '@/context/meal-history-context';
 import { useTheme } from '@/hooks/use-theme';
 import { lookupBarcode } from '@/lib/barcode/lookup';
@@ -220,6 +220,7 @@ function Scanner({
 
 function ProductResult({ product, onScanAgain }: { product: Product; onScanAgain: () => void }) {
   const theme = useTheme();
+  const window = useWindowDimensions();
   const { addMeal } = useMealHistory();
   const [amount, setAmount] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
@@ -252,7 +253,11 @@ function ProductResult({ product, onScanAgain }: { product: Product; onScanAgain
 
   return (
     <View style={styles.section}>
-      <View style={[styles.productImageFrame, { backgroundColor: '#FFFFFF' }]}>
+      <View
+        style={[
+          styles.productImageFrame,
+          { backgroundColor: '#FFFFFF', maxHeight: window.height * MaxPhotoShare },
+        ]}>
         {product.imageUrl ? (
           <Image
             source={{ uri: product.imageUrl }}
@@ -432,6 +437,7 @@ const styles = StyleSheet.create({
   },
   productImageFrame: {
     width: '100%',
+    alignSelf: 'center',
     aspectRatio: 4 / 3,
     borderRadius: 16,
     overflow: 'hidden',

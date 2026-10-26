@@ -10,6 +10,7 @@ import {
   Pressable,
   StyleSheet,
   TextInput,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -22,7 +23,7 @@ import { SegmentedControl } from '@/components/segmented-control';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { APP_NAME } from '@/constants/brand';
-import { BottomTabInset, DisplayFont, MaxContentWidth, Spacing } from '@/constants/theme';
+import { BottomTabInset, DisplayFont, MaxContentWidth, MaxPhotoShare, Spacing } from '@/constants/theme';
 import { useMealHistory } from '@/context/meal-history-context';
 import { useSettings } from '@/context/settings-context';
 import { useFoodAnalysis, type FoodInput, type PickedPhoto } from '@/hooks/use-food-analysis';
@@ -38,6 +39,7 @@ const PICKER_OPTIONS: ImagePicker.ImagePickerOptions = {
 export default function ScanScreen() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const window = useWindowDimensions();
   const { activeModel, keysLoaded } = useSettings();
   const { addMeal } = useMealHistory();
   const { state, analyze, reset } = useFoodAnalysis();
@@ -256,7 +258,7 @@ export default function ScanScreen() {
             {state.input.kind === 'photo' ? (
               <Image
                 source={{ uri: state.input.photo.uri }}
-                style={styles.photo}
+                style={[styles.photo, { maxHeight: window.height * MaxPhotoShare }]}
                 contentFit="cover"
                 accessibilityLabel="Photo of your meal"
               />
@@ -406,6 +408,7 @@ const styles = StyleSheet.create({
   },
   photo: {
     width: '100%',
+    alignSelf: 'center',
     aspectRatio: 4 / 3,
     borderRadius: 16,
   },
