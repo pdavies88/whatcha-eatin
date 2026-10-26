@@ -220,11 +220,9 @@ Apple asks for a recording on a physical iPhone running the latest iOS, starting
 
 ## Screenshots
 
-> **Retake before the next submission.** These screenshots show the design before the October 2026 redesign: the old icon, a "Scan" tab and a "Choose from library" button. Apple requires screenshots to show the current app (guideline 2.3.3).
+Ready to upload, in [`screenshots/`](screenshots/). All are 1320 × 2868 pixels, the 6.9-inch iPhone size, captured on October 26, 2026 from a Release build on the iPhone 18 Pro Max simulator, with a clean 9:41 status bar. They show the redesigned app. Upload them in this order:
 
-Ready to upload, in [`screenshots/`](screenshots/). All are 1320 × 2868 pixels, the 6.9-inch iPhone size, captured from the iPhone 18 Pro Max simulator with a clean 9:41 status bar. Upload them in this order:
-
-1. `01-scan.png`: Scan tab with the logo, hero and the photo and barcode buttons
+1. `01-log.png`: Log tab with the hero, a typed meal and the Type it and Snap it modes
 2. `02-meal-result.png`: a meal's photo with its calorie and macro breakdown
 3. `03-barcode-result.png`: a scanned bag of chips with its product photo and label nutrition
 4. `04-daily-targets.png`: lose, maintain and gain targets on the Week tab
@@ -236,11 +234,9 @@ Ready to upload, in [`screenshots/`](screenshots/). All are 1320 × 2868 pixels,
 
 Apple allows up to 10 screenshots. The first three show in search results, so keep that order.
 
-`extra-first-launch.png` shows the first-launch screen asking for a key. Swap it in for one of the five if you prefer.
+The meal photos come from Unsplash under its free license. See [`screenshots/CREDITS.md`](screenshots/CREDITS.md). The meals and numbers are sample data loaded straight into the simulator app's storage, not live AI results. The barcode result is a live Open Food Facts lookup.
 
-The meal photos come from Unsplash under its free license. See [`screenshots/CREDITS.md`](screenshots/CREDITS.md). The meals and numbers are sample data loaded straight into the simulator app's storage, not live AI results.
-
-To retake them later, run the app on the iPhone 18 Pro Max simulator, set the status bar with `xcrun simctl status_bar booted override --time 9:41 --batteryState discharging --batteryLevel 100`, and save each screen with `xcrun simctl io booted screenshot <file>.png`. Save the files outside the project folder while Metro is running. A new file in the project makes Metro reload the app mid-capture.
+To retake them later, build a Release version for the simulator with `npx expo run:ios --configuration Release`, so no developer warning banner appears. Set the status bar with `xcrun simctl status_bar booted override --time 9:41 --batteryState discharging --batteryLevel 100`, and save each screen with `xcrun simctl io booted screenshot <file>.png`. The sample meals are relative to today, and the app deletes meals older than 7 days at launch, so load them just before you capture.
 
 ## iPhone Duo
 
@@ -257,9 +253,17 @@ Say "iPhone Duo" in the promotional text and What's New, as above. Owners search
 
 ### iPhone Duo screenshots
 
-When you upload iPhone Duo screenshots, the App Store shows a badge on the product page saying the app is optimized for iPhone Duo. From April 2027, every submission must include them. Check App Store Connect's screenshot specifications for the iPhone Duo sizes.
+When you upload iPhone Duo screenshots, the App Store shows a badge on the product page saying the app is optimized for iPhone Duo. From April 2027, every submission must include them.
 
-To capture them, run the app on the iPhone Duo simulator (Xcode 27.1, iOS 27.1 runtime). Unfold it in Device Hub, load the same sample data as the iPhone screenshots, and save each screen with `xcrun simctl io <device> screenshot <file>.png`.
+Ready to upload, in [`screenshots/iphone-duo/`](screenshots/iphone-duo/). They are 2853 × 2007 pixels, the unfolded inner display in landscape, captured from a Release build on the iPhone Duo simulator (Xcode 27.1, iOS 27.1) with the same sample data. Check this size against App Store Connect's iPhone Duo screenshot specifications before uploading. Upload them in this order:
+
+1. `01-log.png`: Log tab with the vertical tab bar on the right
+2. `02-meal-result.png`: a meal's photo with its calorie and macro breakdown
+3. `03-daily-targets.png`: lose, maintain and gain targets
+4. `04-week.png`: the 7-day calendar with daily totals and today's meals
+5. `05-settings.png`: AI provider choices in Settings
+
+To retake them, unfold the simulator in Device Hub before launching the app, then capture as for the iPhone set.
 
 ## After approval
 
