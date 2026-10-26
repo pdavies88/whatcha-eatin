@@ -157,7 +157,7 @@ Apple updated this questionnaire in 2025, so the exact wording may differ. The e
 
 Create a separate Google AI Studio project and key just for App Review, so you can delete it after approval. Paste the key where shown below, in App Store Connect only.
 
-These notes also answer the six questions in Apple's "Guideline 2.1 - Information Needed" request, which new developer accounts get. Paste the same text as your reply in App Store Connect **and** into the App Review **Notes** field. The Notes field allows 4,000 characters, and this text is about 3,900 with a key pasted in. The privacy policy and support URLs have their own fields, so the notes leave them out.
+These notes also answer the six questions in Apple's "Guideline 2.1 - Information Needed" request, which new developer accounts get. Paste the same text as your reply in App Store Connect **and** into the App Review **Notes** field. The Notes field allows 4,000 characters, and this text is about 3,990 with a key pasted in, so check the count after any edit. The privacy policy and support URLs have their own fields, so the notes leave them out.
 
 ```
 1. SCREEN RECORDING
@@ -171,9 +171,9 @@ No login is needed. AI photo analysis uses the user's own AI provider key; Googl
 
 <PASTE GEMINI KEY HERE>
 
-a. Launch the app. On the Scan tab, tap "Get a free Gemini key".
-b. Paste the key into the field at the bottom and tap Save. The app checks the key with Google and returns to the Scan tab.
-c. Tap "Take photo" and photograph any food (or "Choose from library"). The app shows the estimated calories and macros. Tap "Save to this week".
+a. Launch the app. On the Log tab, tap "Get a free Gemini key".
+b. Paste the key into the field at the bottom and tap Save. The app checks the key with Google and returns to the Log tab.
+c. With "Type it" selected, type a meal such as "2 scrambled eggs and toast" and tap "Look it up". Or choose "Snap it", tap "Take photo" and photograph any food. The app shows the estimated calories and macros. Tap "Save to this week".
 d. Barcode scanning needs no key: tap "Scan a barcode" and scan any packaged food, or type 028400090858 (Lay's Classic Potato Chips) and tap "Look up". Tap "Save to this week".
 e. Open the Week tab to see the 7-day calendar and today's meals. Tap a meal, then "Delete meal" to remove it.
 f. On the Week tab, tap "Add your details" and enter any adult age, height and weight to see daily calorie and macro targets.
@@ -208,16 +208,19 @@ Apple asks for a recording on a physical iPhone running the latest iOS, starting
 2. Add **Screen Recording** to Control Center (Settings → Control Center) if it isn't there. Swipe down from the top right and tap the record button. The countdown gives you 3 seconds.
 3. Record this flow, slowly, in about 2–3 minutes:
    1. On the Home Screen, tap the app icon.
-   2. Scan tab: tap **Get a free Gemini key**, scroll the guide, paste the review key and tap **Save**. Don't open Google AI Studio on camera, because it shows your account.
-   3. Tap **Take photo** and photograph real food. Wait for the result, then tap **Save to this week**.
-   4. Tap **Scan a barcode** and scan a packaged food. Change the servings, then tap **Save to this week**.
-   5. Week tab: show the calendar and today's meals. Tap a meal, scroll it, then tap **Delete meal** and confirm.
-   6. Tap **Add your details**, fill in the form and **Save** to show the daily targets.
-   7. Settings: show the providers and models, then **About → Privacy policy**.
+   2. Log tab: tap **Get a free Gemini key**, scroll the guide, paste the review key and tap **Save**. Don't open Google AI Studio on camera, because it shows your account.
+   3. With **Type it** selected, type a meal and tap **Look it up**. Wait for the result, then tap **Save to this week**.
+   4. Choose **Snap it**, tap **Take photo** and photograph real food. Wait for the result, then tap **Save to this week**.
+   5. Tap **Scan a barcode** and scan a packaged food. Change the servings, then tap **Save to this week**.
+   6. Week tab: show the calendar and today's meals. Tap a meal, scroll it, then tap **Delete meal** and confirm.
+   7. Tap **Add your details**, fill in the form and **Save** to show the daily targets.
+   8. Settings: show the providers and models, then **About → Privacy policy**.
 4. Stop recording from the red status indicator. The video is saved to Photos.
 5. AirDrop it to your Mac. Attach it to your reply in App Store Connect. If the upload is too large, export a smaller copy with QuickTime (File → Export As → 1080p) and try again.
 
 ## Screenshots
+
+> **Retake before the next submission.** These screenshots show the design before the October 2026 redesign: the old icon, a "Scan" tab and a "Choose from library" button. Apple requires screenshots to show the current app (guideline 2.3.3).
 
 Ready to upload, in [`screenshots/`](screenshots/). All are 1320 × 2868 pixels, the 6.9-inch iPhone size, captured from the iPhone 18 Pro Max simulator with a clean 9:41 status bar. Upload them in this order:
 
