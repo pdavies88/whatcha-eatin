@@ -29,9 +29,11 @@ export default function WeekScreen() {
 
   const days = trackedDays(now);
   const todayKey = dayKey(now);
-  const [selectedKey, setSelectedKey] = useState(todayKey);
+  // Null means "today", so the selection moves to the new day at midnight instead of staying on yesterday.
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
   // If the selected day has rolled out of the window, fall back to today.
-  const activeKey = days.some((day) => dayKey(day) === selectedKey) ? selectedKey : todayKey;
+  const activeKey =
+    selectedKey && days.some((day) => dayKey(day) === selectedKey) ? selectedKey : todayKey;
 
   const mealsByDay = new Map<string, MealEntry[]>();
   for (const meal of meals) {
@@ -54,10 +56,12 @@ export default function WeekScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView edges={['top']} style={styles.container}>
+      <SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.header}>
-            <ThemedText type="subtitle">Week</ThemedText>
+            <ThemedText type="subtitle" accessibilityRole="header">
+              Week
+            </ThemedText>
             <ThemedText type="small" themeColor="textSecondary">
               Meals stay on this phone for {RETENTION_DAYS} days, then they are cleared automatically.
             </ThemedText>
@@ -76,7 +80,7 @@ export default function WeekScreen() {
                   fill={caloriesByDay[index] / maxCalories}
                   isToday={key === todayKey}
                   isSelected={key === activeKey}
-                  onPress={() => setSelectedKey(key)}
+                  onPress={() => setSelectedKey(key === todayKey ? null : key)}
                 />
               );
             })}
@@ -165,7 +169,9 @@ function MealRow({ meal }: { meal: MealEntry }) {
   const { totals } = meal.analysis;
   return (
     <Link href={{ pathname: '/meal/[id]', params: { id: meal.id } }} asChild>
-      <Pressable accessibilityRole="button">
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`${meal.analysis.meal_name}, ${timeFormatter.format(meal.createdAt)}, ${Math.round(totals.calories)} calories, ${Math.round(totals.protein_g)} grams protein, ${Math.round(totals.carbs_g)} grams carbs, ${Math.round(totals.fat_g)} grams fat`}>
         {({ pressed }) => (
           <ThemedView type="backgroundElement" style={[styles.row, pressed && styles.pressed]}>
             <MealPhoto meal={meal} style={styles.thumbnail} />

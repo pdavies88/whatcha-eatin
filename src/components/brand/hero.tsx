@@ -1,10 +1,9 @@
-import { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
   useAnimatedStyle,
-  useReducedMotion,
   useSharedValue,
   withRepeat,
   withTiming,
@@ -16,9 +15,12 @@ import { LogoMark } from '@/components/brand/logo-mark';
 import { ThemedText } from '@/components/themed-text';
 import { APP_NAME, APP_TAGLINE } from '@/constants/brand';
 import { DisplayFont, Spacing } from '@/constants/theme';
+import { useReduceMotion } from '@/hooks/use-reduce-motion';
 import { useTheme } from '@/hooks/use-theme';
 
 const HERO_HEIGHT = 260;
+/** In short windows, such as a phone in landscape, the hero gives up space to the form below it. */
+const MAX_HERO_SHARE = 0.4;
 const GRID = 22;
 const SCAN_DURATION = 3_600;
 
@@ -26,11 +28,19 @@ const SCAN_DURATION = 3_600;
 export function Hero() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
-  const height = HERO_HEIGHT + insets.top;
+  const window = useWindowDimensions();
+  const minHeight = Math.min(HERO_HEIGHT, window.height * MAX_HERO_SHARE) + insets.top;
+  // The panel grows when its content needs more room than `minHeight`, so the scan line follows the real height.
+  const [height, setHeight] = useState(minHeight);
 
   return (
-    <View style={[styles.hero, { height, backgroundColor: theme.heroBackground }]}>
-      <View style={StyleSheet.absoluteFill} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+    <View style={[styles.hero, { minHeight, backgroundColor: theme.heroBackground }]}>
+      <View
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+        onLayout={(event) => setHeight(event.nativeEvent.layout.height)}>
         <Svg width="100%" height="100%">
           <Defs>
             <Pattern id="dots" width={GRID} height={GRID} patternUnits="userSpaceOnUse">
@@ -39,14 +49,27 @@ export function Hero() {
           </Defs>
           <Rect width="100%" height="100%" fill="url(#dots)" />
         </Svg>
-        <ScanLine height={height} color={theme.tint} />
+        <ScanLine height={height} color={theme.heroAccent} />
       </View>
 
-      <View style={[styles.content, { paddingTop: insets.top }]}>
+      <View
+        style={[
+          styles.content,
+          {
+            paddingTop: insets.top + Spacing.four,
+            paddingLeft: insets.left + Spacing.four,
+            paddingRight: insets.right + Spacing.four,
+          },
+        ]}>
         <LogoMark size={72} />
         <View style={styles.words}>
-          <View style={[styles.rule, { backgroundColor: theme.tint }]} />
-          <ThemedText style={styles.wordmark} numberOfLines={1} adjustsFontSizeToFit>
+          <View style={[styles.rule, { backgroundColor: theme.heroAccent }]} />
+          <ThemedText
+            style={styles.wordmark}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            accessibilityRole="header"
+            accessibilityLabel={APP_NAME}>
             {APP_NAME.toUpperCase()}
           </ThemedText>
           <ThemedText type="small" style={styles.tagline}>
@@ -59,11 +82,16 @@ export function Hero() {
 }
 
 function ScanLine({ height, color }: { height: number; color: string }) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReduceMotion();
   const progress = useSharedValue(0.5);
 
   useEffect(() => {
-    if (reduceMotion) return;
+    if (reduceMotion) {
+      // Park the line in the middle of the panel.
+      cancelAnimation(progress);
+      progress.value = 0.5;
+      return;
+    }
     progress.value = 0;
     progress.value = withRepeat(withTiming(1, { duration: SCAN_DURATION, easing: Easing.inOut(Easing.quad) }), -1, true);
     return () => cancelAnimation(progress);
@@ -92,9 +120,8 @@ const styles = StyleSheet.create({
     opacity: 0.55,
   },
   content: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'flex-end',
-    paddingHorizontal: Spacing.four,
     paddingBottom: Spacing.four,
     gap: Spacing.three,
   },

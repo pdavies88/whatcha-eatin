@@ -10,6 +10,7 @@ Everything App Store Connect asks for, ready to paste. Fill these in under **App
 - [ ] A TestFlight build installs and works on your iPhone.
 - [ ] App information, pricing and the version page are filled in from this file.
 - [ ] Screenshots from `store/screenshots/` are uploaded. See [Screenshots](#screenshots).
+- [ ] The build was made with Xcode 27.1 or later, so it's optimized for iPhone Duo. EAS's default SDK 58 image uses Xcode 27.1. See [iPhone Duo](#iphone-duo).
 - [ ] App Privacy questionnaire is answered. See [App Privacy](#app-privacy-questionnaire).
 - [ ] Age rating questionnaire is answered.
 - [ ] App Review notes include a working Gemini key. See [App Review information](#app-review-information).
@@ -42,7 +43,7 @@ If the name is taken, App Store Connect tells you when you create the record. Th
 ### Promotional text (170 characters, can change without review)
 
 ```
-Snap your plate and get calories, protein, carbs and fat in seconds. No account, no subscription, and your meals stay on your phone.
+Snap your plate and get calories, protein, carbs and fat in seconds. Now optimized for iPhone Duo. No account, no subscription, and meals stay on your phone.
 ```
 
 ### Description (4,000 characters)
@@ -64,6 +65,12 @@ The Week tab shows a 7-day calendar with your daily totals. Tap any day to see i
 NO ACCOUNTS, NO SUBSCRIPTIONS
 Whatcha Eatin' uses your own AI key. A Google Gemini key is free, and the app walks you through creating one in about a minute. Prefer another AI? You can also use OpenAI, Anthropic, xAI or OpenRouter, and choose the exact model.
 
+OPTIMIZED FOR IPHONE DUO
+Whatcha Eatin' fills both iPhone Duo displays. It adapts as you fold and unfold, in portrait or landscape, without restarting.
+
+ACCESSIBLE
+Works with VoiceOver, Dynamic Type and Reduce Motion, with high-contrast colors in light and dark mode.
+
 PRIVATE BY DESIGN
 - No sign-up and no servers
 - No ads, analytics or tracking
@@ -81,6 +88,20 @@ calorie,macro,counter,tracker,food,photo,nutrition,protein,diet,meal,log,carbs,A
 ```
 
 Apple doesn't allow other companies' trademarks in keywords, so "Gemini" and "ChatGPT" are left out on purpose.
+
+### What's New in this version (4,000 characters)
+
+App Store Connect shows this field only for updates. Skip it for the first release.
+
+```
+Now optimized for iPhone Duo. Whatcha Eatin' fills the inner and outer displays, adapts as you fold and unfold, and works in landscape.
+
+Also new:
+- A redesigned look, with a new Log tab and week view
+- Type what you ate to look it up, no photo needed
+- Better VoiceOver support, higher-contrast colors and larger tap targets
+- The hero animation stops when Reduce Motion is on
+```
 
 ## App Privacy questionnaire
 
@@ -136,14 +157,14 @@ Apple updated this questionnaire in 2025, so the exact wording may differ. The e
 
 Create a separate Google AI Studio project and key just for App Review, so you can delete it after approval. Paste the key where shown below, in App Store Connect only.
 
-These notes also answer the six questions in Apple's "Guideline 2.1 - Information Needed" request, which new developer accounts get. Paste the same text as your reply in App Store Connect **and** into the App Review **Notes** field. The Notes field allows 4,000 characters, and this text is about 3,950 with a key pasted in.
+These notes also answer the six questions in Apple's "Guideline 2.1 - Information Needed" request, which new developer accounts get. Paste the same text as your reply in App Store Connect **and** into the App Review **Notes** field. The Notes field allows 4,000 characters, and this text is about 3,900 with a key pasted in. The privacy policy and support URLs have their own fields, so the notes leave them out.
 
 ```
 1. SCREEN RECORDING
 Attached: a recording on a physical iPhone running the latest iOS, starting from launch. It shows setting up a free AI key, analyzing a meal photo, scanning a barcode, the week view, daily targets and deleting a meal. The app has no account registration or login, no user-generated content shared with other users, and no paid content or in-app purchases.
 
 2. PURPOSE AND AUDIENCE
-Whatcha Eatin' helps adults (18+) understand what they eat. Logging food by hand is slow, so many people give up tracking calories. The app makes it quick: take a photo of a meal and an AI model estimates the calories, protein, carbs, fat, fiber and sugar of each food it sees, or scan the barcode of packaged food to log its label nutrition. Meals are kept for a rolling 7 days, and optional daily targets show how much to eat to lose, maintain or gain weight. Data stays on the device, with no accounts, ads, analytics or subscriptions.
+Whatcha Eatin' helps adults (18+) understand what they eat, quickly: take a photo of a meal and an AI model estimates the calories, protein, carbs, fat, fiber and sugar of each food it sees, or scan the barcode of packaged food to log its label nutrition. Meals are kept for a rolling 7 days, and optional daily targets show how much to eat to lose, maintain or gain weight. Data stays on the device, with no accounts, ads, analytics or subscriptions.
 
 3. SETUP AND TEST INSTRUCTIONS
 No login is needed. AI photo analysis uses the user's own AI provider key; Google provides Gemini keys for free, and the app includes a step-by-step guide. Please use this Gemini key, created for App Review:
@@ -173,8 +194,8 @@ The app works the same in every region. All features are available everywhere, a
 The app is not a medical device and does not diagnose, treat or manage any medical condition. It gives general wellness nutrition estimates for adults, says in the app that estimates are not medical advice, and advises people with medical conditions, or who are pregnant, to consult a doctor. Daily targets use the published Mifflin-St Jeor equation with safe minimum calorie levels, are not shown to users under 18, and include no weight-loss target for users with a BMI under 18.5.
 No protected third-party material is used. Barcode product data and photos come from Open Food Facts under the Open Database License and CC BY-SA, and are credited in the app. Food photos in the App Store screenshots are from Unsplash under the Unsplash License.
 
-Privacy policy: https://pdavies88.github.io/whatcha-eatin/privacy/
-Support: https://pdavies88.github.io/whatcha-eatin/support/
+7. IPHONE DUO
+Built with the iOS 27.1 SDK and optimized for iPhone Duo. The app adapts to the outer and inner displays, folded or unfolded, in portrait and landscape.
 ```
 
 Gemini's free tier allows a limited number of requests per day. Leave the key active until the review is approved. Then delete it in Google AI Studio.
@@ -217,6 +238,25 @@ Apple allows up to 10 screenshots. The first three show in search results, so ke
 The meal photos come from Unsplash under its free license. See [`screenshots/CREDITS.md`](screenshots/CREDITS.md). The meals and numbers are sample data loaded straight into the simulator app's storage, not live AI results.
 
 To retake them later, run the app on the iPhone 18 Pro Max simulator, set the status bar with `xcrun simctl status_bar booted override --time 9:41 --batteryState discharging --batteryLevel 100`, and save each screen with `xcrun simctl io booted screenshot <file>.png`. Save the files outside the project folder while Metro is running. A new file in the project makes Metro reload the app mid-capture.
+
+## iPhone Duo
+
+Apple accepts iPhone Duo-optimized builds from October 5, 2026. A build is optimized when it's made with Xcode 27.1 (the iOS 27.1 SDK) or later. Older builds run in a smaller window on the inner display.
+
+What the app does on iPhone Duo:
+
+- **Outer display:** the status bar and camera sit on the right edge, and the tab bar runs vertically below them. Content stays clear of both.
+- **Inner display:** the app fills the screen. Content is centered with a maximum width of 800 points, and the tab bar runs vertically on the right.
+- **Fold, unfold and rotate:** the layout adapts without restarting. Text fields keep what's typed through a rotation. A fold with text typed hasn't been tested yet.
+- **Cold launch while unfolded:** `patches/react-native-screens+4.30.0.patch` makes the tab bar appear. Without it, the tab bar is missing until the device folds or rotates. See the main README.
+
+Say "iPhone Duo" in the promotional text and What's New, as above. Owners search for it, and Duo trackers read release notes.
+
+### iPhone Duo screenshots
+
+When you upload iPhone Duo screenshots, the App Store shows a badge on the product page saying the app is optimized for iPhone Duo. From April 2027, every submission must include them. Check App Store Connect's screenshot specifications for the iPhone Duo sizes.
+
+To capture them, run the app on the iPhone Duo simulator (Xcode 27.1, iOS 27.1 runtime). Unfold it in Device Hub, load the same sample data as the iPhone screenshots, and save each screen with `xcrun simctl io <device> screenshot <file>.png`.
 
 ## After approval
 

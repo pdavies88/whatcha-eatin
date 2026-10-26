@@ -2,7 +2,17 @@ import { CameraView, useCameraPermissions, type BarcodeScanningResult } from 'ex
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
 import { Button } from '@/components/button';
 import { KeyboardAwareScrollView } from '@/components/keyboard-aware-scroll-view';
@@ -31,6 +41,8 @@ type ScanState =
 
 const AMOUNT_STEP = 0.5;
 const MAX_AMOUNT = 20;
+/** The square camera frame never takes more than this share of the window's height, so it fits in landscape. */
+const MAX_CAMERA_SHARE = 0.6;
 
 export default function BarcodeScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -38,6 +50,21 @@ export default function BarcodeScreen() {
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => () => abortRef.current?.abort(), []);
+
+  // Screen reader users can't see the result replace the camera, so say what happened.
+  const announcement =
+    state.status === 'looking_up'
+      ? `Looking up ${state.barcode}`
+      : state.status === 'found'
+        ? `Found ${state.product.name}`
+        : state.status === 'missing'
+          ? 'Product not found'
+          : state.status === 'error'
+            ? state.message
+            : null;
+  useEffect(() => {
+    if (announcement) AccessibilityInfo.announceForAccessibility(announcement);
+  }, [announcement]);
 
   const lookUp = async (barcode: string) => {
     abortRef.current?.abort();
@@ -118,6 +145,7 @@ function Scanner({
   onManual: (barcode: string) => void;
 }) {
   const theme = useTheme();
+  const window = useWindowDimensions();
   const [manual, setManual] = useState('');
   const manualCode = manual.replace(/\D/g, '');
   const submitManual = () => {
@@ -128,7 +156,11 @@ function Scanner({
     <KeyboardAwareScrollView
       contentContainerStyle={styles.content}
       contentInsetAdjustmentBehavior="automatic">
-      <View style={[styles.cameraFrame, { backgroundColor: theme.backgroundElement }]}>
+      <View
+        style={[
+          styles.cameraFrame,
+          { backgroundColor: theme.backgroundElement, maxWidth: window.height * MAX_CAMERA_SHARE },
+        ]}>
         {permission?.granted ? (
           <>
             <CameraView
@@ -156,7 +188,11 @@ function Scanner({
       </ThemedText>
 
       <View style={styles.section}>
-        <ThemedText type="smallBold" themeColor="textSecondary">
+        <ThemedText
+          type="smallBold"
+          themeColor="textSecondary"
+          accessibilityRole="header"
+          accessibilityLabel="Or type the number under the barcode">
           OR TYPE THE NUMBER UNDER THE BARCODE
         </ThemedText>
         <View style={styles.row}>
@@ -169,7 +205,10 @@ function Scanner({
             keyboardType="number-pad"
             returnKeyType="search"
             maxLength={14}
-            style={[styles.input, { color: theme.text, backgroundColor: theme.backgroundElement }]}
+            style={[
+              styles.input,
+              { color: theme.text, backgroundColor: theme.backgroundElement, borderColor: theme.inputBorder },
+            ]}
             accessibilityLabel="Barcode number"
           />
           <Button title="Look up" variant="secondary" disabled={manualCode.length < 8} onPress={submitManual} />
@@ -232,7 +271,9 @@ function ProductResult({ product, onScanAgain }: { product: Product; onScanAgain
             {product.brand}
           </ThemedText>
         ) : null}
-        <ThemedText style={styles.productName}>{product.name}</ThemedText>
+        <ThemedText style={styles.productName} accessibilityRole="header">
+          {product.name}
+        </ThemedText>
       </View>
 
       <ThemedView type="backgroundElement" style={styles.stepperCard}>
@@ -244,14 +285,14 @@ function ProductResult({ product, onScanAgain }: { product: Product; onScanAgain
         </View>
         <StepButton
           label="−"
-          accessibilityLabel="Less"
+          accessibilityLabel={`Less, currently ${amount}`}
           disabled={amount <= AMOUNT_STEP}
           onPress={() => setAmount((value) => Math.max(AMOUNT_STEP, value - AMOUNT_STEP))}
         />
         <ThemedText style={styles.amount}>{amount}</ThemedText>
         <StepButton
           label="+"
-          accessibilityLabel="More"
+          accessibilityLabel={`More, currently ${amount}`}
           disabled={amount >= MAX_AMOUNT}
           onPress={() => setAmount((value) => Math.min(MAX_AMOUNT, value + AMOUNT_STEP))}
         />
@@ -321,7 +362,9 @@ function MissingProduct({
 
   return (
     <View style={styles.section}>
-      <ThemedText style={styles.productName}>Product not found</ThemedText>
+      <ThemedText style={styles.productName} accessibilityRole="header">
+        Product not found
+      </ThemedText>
       <ThemedText themeColor="textSecondary">
         {message} Take a photo of the Nutrition Facts label instead, and the AI will read it.
       </ThemedText>
@@ -355,6 +398,7 @@ const styles = StyleSheet.create({
   },
   cameraFrame: {
     width: '100%',
+    alignSelf: 'center',
     aspectRatio: 1,
     borderRadius: 16,
     overflow: 'hidden',
@@ -381,6 +425,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 52,
     borderRadius: 12,
+    borderWidth: 1,
     paddingHorizontal: Spacing.three,
     fontSize: 17,
     fontVariant: ['tabular-nums'],

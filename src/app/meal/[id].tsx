@@ -47,7 +47,7 @@ export default function MealDetailScreen() {
       <ScrollView contentContainerStyle={styles.content} contentInsetAdjustmentBehavior="automatic">
         {meal.source === 'text' && meal.description ? (
           <View style={[styles.quote, { borderLeftColor: theme.tint }]}>
-            <ThemedText themeColor="textSecondary" type="smallBold">
+            <ThemedText themeColor="textSecondary" type="smallBold" accessibilityLabel="You said">
               YOU SAID
             </ThemedText>
             <ThemedText style={styles.quoteText}>{meal.description}</ThemedText>

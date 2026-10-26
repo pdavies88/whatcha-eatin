@@ -25,7 +25,9 @@ export function TargetsCard({ dayCalories, dayLabel }: { dayCalories: number; da
   if (!profile) {
     return (
       <ThemedView type="backgroundElement" style={styles.card}>
-        <ThemedText type="smallBold">Know your daily targets</ThemedText>
+        <ThemedText type="smallBold" accessibilityRole="header">
+          Know your daily targets
+        </ThemedText>
         <ThemedText type="small" themeColor="textSecondary">
           Add your age, height, weight and activity to see how many calories and macros you need each day to lose,
           maintain or gain weight.
@@ -99,9 +101,11 @@ function Header() {
   const theme = useTheme();
   return (
     <View style={styles.header}>
-      <ThemedText style={styles.title}>Daily targets</ThemedText>
+      <ThemedText style={styles.title} accessibilityRole="header">
+        Daily targets
+      </ThemedText>
       <Link href="/profile" asChild>
-        <Pressable accessibilityRole="button" accessibilityLabel="Edit your details" hitSlop={8}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Edit your details" hitSlop={12}>
           <ThemedText type="small" style={{ color: theme.tint }}>
             Edit details
           </ThemedText>

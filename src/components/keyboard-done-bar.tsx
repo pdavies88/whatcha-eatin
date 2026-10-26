@@ -16,7 +16,7 @@ export function KeyboardDoneBar({ id }: { id: string }) {
   return (
     <InputAccessoryView nativeID={id}>
       <View style={[styles.bar, { backgroundColor: theme.backgroundElement, borderTopColor: theme.border }]}>
-        <Pressable accessibilityRole="button" onPress={Keyboard.dismiss} hitSlop={8}>
+        <Pressable accessibilityRole="button" onPress={Keyboard.dismiss} hitSlop={12}>
           <ThemedText type="smallBold" style={{ color: theme.tint }}>
             Done
           </ThemedText>

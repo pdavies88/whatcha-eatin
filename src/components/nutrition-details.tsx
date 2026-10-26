@@ -15,7 +15,9 @@ export function NutritionDetails({ analysis }: { analysis: NutritionAnalysis }) 
   if (!analysis.is_food) {
     return (
       <ThemedView type="backgroundElement" style={styles.card}>
-        <ThemedText type="smallBold">No food detected</ThemedText>
+        <ThemedText type="smallBold" accessibilityRole="header">
+          No food detected
+        </ThemedText>
         <ThemedText type="small" themeColor="textSecondary">
           {analysis.notes || 'Try another photo with the food clearly in frame.'}
         </ThemedText>
@@ -26,7 +28,9 @@ export function NutritionDetails({ analysis }: { analysis: NutritionAnalysis }) 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <ThemedText style={styles.mealName}>{analysis.meal_name}</ThemedText>
+        <ThemedText style={styles.mealName} accessibilityRole="header">
+          {analysis.meal_name}
+        </ThemedText>
         <ThemedText type="small" themeColor="textSecondary">
           {CONFIDENCE_LABEL[analysis.confidence]}
         </ThemedText>

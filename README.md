@@ -73,14 +73,12 @@ src/
     barcode/              Open Food Facts lookup and parsing
     image.ts              Resize to 1024px JPEG; store and clean up meal photos
   context/                Settings and meal history providers
-plugins/
-  with-ios-scene-lifecycle.js   Adopts the UIScene life cycle required by the iOS 27 SDK
 ```
 
 - Every provider returns structured JSON. The app checks it against a Zod schema. When the check fails, the app shows an error instead of wrong numbers.
 - The app deletes expired meals and their photos at launch, when it returns to the foreground, and when you save a meal.
-- `plugins/with-ios-scene-lifecycle.js` copies the Expo SDK 58 template. Remove it after upgrading to SDK 58.
 - Headings, numbers and buttons use the Space Grotesk font, loaded at startup with `useFonts` so it also works in Expo Go.
+- `patches/react-native-screens+4.30.0.patch` makes the tab bar appear when the app launches on an unfolded iPhone Duo. It is the fix from [react-native-screens#4990](https://github.com/software-mansion/react-native-screens/pull/4990). `npm install` applies it through `postinstall`. Delete the patch after upgrading to a react-native-screens release that includes the fix.
 
 ## Releasing to TestFlight
 

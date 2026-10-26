@@ -14,14 +14,19 @@ export const Colors = {
     backgroundElement: '#FFFFFF',
     backgroundSelected: '#E7E7E3',
     textSecondary: '#5C5C58',
-    tint: '#E8501A',
+    // Darker than the brand orange so text and white labels on it reach WCAG AA (4.5:1).
+    tint: '#C44016',
     onTint: '#FFFFFF',
     danger: '#D92D20',
     border: '#DEDED9',
+    // Text fields need a 3:1 outline against both background colors (WCAG 1.4.11).
+    inputBorder: '#8A8A85',
     protein: '#2F6BFF',
     carbs: '#E8A100',
     fat: '#E0287A',
     heroBackground: '#0B0B0B',
+    // The hero is dark in both modes, so it keeps the bright brand orange.
+    heroAccent: '#E8501A',
   },
   dark: {
     text: '#F5F5F2',
@@ -33,10 +38,12 @@ export const Colors = {
     onTint: '#0B0B0B',
     danger: '#FF5A4E',
     border: '#2A2A2A',
+    inputBorder: '#6B6B66',
     protein: '#5B8CFF',
     carbs: '#FFC233',
     fat: '#FF4F9A',
     heroBackground: '#0B0B0B',
+    heroAccent: '#FF6A2B',
   },
 } as const;
 

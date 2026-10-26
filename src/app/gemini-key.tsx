@@ -92,7 +92,10 @@ export default function GeminiKeyScreen() {
           onSubmitEditing={() => {
             if (key.trim() && !isSaving) void save();
           }}
-          style={[styles.input, { color: theme.text, backgroundColor: theme.backgroundElement }]}
+          style={[
+            styles.input,
+            { color: theme.text, backgroundColor: theme.backgroundElement, borderColor: theme.inputBorder },
+          ]}
           accessibilityLabel="Gemini API key"
         />
         <Button title="Save" disabled={!key.trim()} loading={isSaving} onPress={save} />
@@ -139,6 +142,7 @@ const styles = StyleSheet.create({
   input: {
     minHeight: 48,
     borderRadius: 12,
+    borderWidth: 1,
     paddingHorizontal: Spacing.three,
     fontSize: 16,
   },

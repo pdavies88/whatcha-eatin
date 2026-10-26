@@ -106,7 +106,10 @@ export default function ProfileScreen() {
     ]);
   };
 
-  const inputStyle = [styles.input, { color: theme.text, backgroundColor: theme.backgroundElement }];
+  const inputStyle = [
+    styles.input,
+    { color: theme.text, backgroundColor: theme.backgroundElement, borderColor: theme.inputBorder },
+  ];
 
   return (
     <ThemedView style={styles.container}>
@@ -251,7 +254,7 @@ export default function ProfileScreen() {
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <View style={styles.field}>
-      <ThemedText type="smallBold" themeColor="textSecondary" style={styles.label}>
+      <ThemedText type="smallBold" themeColor="textSecondary" style={styles.label} accessibilityRole="header">
         {label}
       </ThemedText>
       {children}
@@ -318,6 +321,7 @@ const styles = StyleSheet.create({
   input: {
     minHeight: 48,
     borderRadius: 12,
+    borderWidth: 1,
     paddingHorizontal: Spacing.three,
     fontSize: 17,
   },

@@ -1,8 +1,17 @@
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { Link, router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
-import { ActivityIndicator, Alert, Keyboard, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  AccessibilityInfo,
+  ActivityIndicator,
+  Alert,
+  Keyboard,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Hero } from '@/components/brand/hero';
@@ -113,6 +122,25 @@ export default function ScanScreen() {
   };
 
   const provider = activeModel ? PROVIDERS[activeModel.providerId] : null;
+
+  // VoiceOver and TalkBack users can't see the spinner or the result appear, so say what changed.
+  const announcement =
+    state.status === 'analyzing'
+      ? `Analyzing with ${provider?.name ?? 'AI'}`
+      : state.status === 'error'
+        ? state.message
+        : state.status === 'success'
+          ? state.analysis.is_food
+            ? `${state.analysis.meal_name}, about ${Math.round(state.analysis.totals.calories)} calories`
+            : 'No food detected'
+          : null;
+  useEffect(() => {
+    if (announcement) AccessibilityInfo.announceForAccessibility(announcement);
+  }, [announcement]);
+
+  // Keeps content clear of the Dynamic Island and home indicator in landscape. The hero handles its own.
+  const sideInsets = { paddingLeft: Spacing.four + insets.left, paddingRight: Spacing.four + insets.right };
+
   const modelLabel =
     provider && activeModel
       ? (provider.suggestedModels.find((option) => option.id === activeModel.model)?.label ?? activeModel.model)
@@ -126,7 +154,7 @@ export default function ScanScreen() {
         {state.status === 'idle' ? (
           <>
             <Hero />
-            <View style={styles.content}>
+            <View style={[styles.content, sideInsets]}>
               {keysLoaded && !activeModel ? (
                 <>
                   <SetupCard />
@@ -136,11 +164,13 @@ export default function ScanScreen() {
 
               {labelFor && activeModel ? (
                 <ThemedView type="backgroundElement" style={styles.setupCard}>
-                  <ThemedText type="smallBold">Photograph the label for {labelFor}</ThemedText>
+                  <ThemedText type="smallBold" accessibilityRole="header">
+                    Photograph the label for {labelFor}
+                  </ThemedText>
                   <ThemedText type="small" themeColor="textSecondary">
                     Take a clear photo of the Nutrition Facts panel. The AI will read the calories and macros from it.
                   </ThemedText>
-                  <Pressable accessibilityRole="button" onPress={clearLabelPrompt}>
+                  <Pressable accessibilityRole="button" onPress={clearLabelPrompt} style={styles.textButton}>
                     <ThemedText type="small" style={{ color: theme.tint }}>
                       Cancel
                     </ThemedText>
@@ -172,7 +202,7 @@ export default function ScanScreen() {
                           multiline
                           style={[
                             styles.input,
-                            { color: theme.text, backgroundColor: theme.backgroundElement, borderColor: theme.border },
+                            { color: theme.text, backgroundColor: theme.backgroundElement, borderColor: theme.inputBorder },
                           ]}
                           accessibilityLabel="Describe what you ate"
                         />
@@ -190,7 +220,7 @@ export default function ScanScreen() {
                           multiline
                           style={[
                             styles.input,
-                            { color: theme.text, backgroundColor: theme.backgroundElement, borderColor: theme.border },
+                            { color: theme.text, backgroundColor: theme.backgroundElement, borderColor: theme.inputBorder },
                           ]}
                           accessibilityLabel="Notes to send with the photo"
                         />
@@ -202,7 +232,10 @@ export default function ScanScreen() {
                   <Button title="Scan a barcode" variant="secondary" onPress={openBarcodeScanner} />
 
                   <Link href="/settings" asChild>
-                    <Pressable accessibilityRole="button" accessibilityHint="Opens AI model settings">
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={`AI model: ${provider.name}, ${modelLabel}. Change`}
+                      accessibilityHint="Opens AI model settings">
                       <ThemedView type="backgroundElement" style={styles.modelChip}>
                         <View style={[styles.liveDot, { backgroundColor: theme.tint }]} />
                         <ThemedText type="smallBold" numberOfLines={1} style={styles.modelName}>
@@ -219,7 +252,7 @@ export default function ScanScreen() {
             </View>
           </>
         ) : (
-          <View style={[styles.content, { paddingTop: insets.top + Spacing.three }]}>
+          <View style={[styles.content, sideInsets, { paddingTop: insets.top + Spacing.three }]}>
             {state.input.kind === 'photo' ? (
               <Image
                 source={{ uri: state.input.photo.uri }}
@@ -282,7 +315,7 @@ const openBarcodeScanner = () => router.push('/barcode');
 /** A small uppercase label that opens a section. */
 function Eyebrow({ children }: { children: string }) {
   return (
-    <ThemedText themeColor="textSecondary" style={styles.eyebrow}>
+    <ThemedText themeColor="textSecondary" style={styles.eyebrow} accessibilityRole="header" accessibilityLabel={children}>
       {children.toUpperCase()}
     </ThemedText>
   );
@@ -292,7 +325,9 @@ function Eyebrow({ children }: { children: string }) {
 function SetupCard() {
   return (
     <ThemedView type="backgroundElement" style={styles.setupCard}>
-      <ThemedText type="smallBold">Add an AI key to get started</ThemedText>
+      <ThemedText type="smallBold" accessibilityRole="header">
+        Add an AI key to get started
+      </ThemedText>
       <ThemedText type="small" themeColor="textSecondary">
         {APP_NAME} uses your own AI key, so there are no accounts or subscriptions. A Gemini key from Google is
         free and takes about a minute to create.
@@ -344,6 +379,11 @@ const styles = StyleSheet.create({
     fontSize: 17,
     lineHeight: 24,
     textAlignVertical: 'top',
+  },
+  textButton: {
+    minHeight: 44,
+    justifyContent: 'center',
+    alignSelf: 'flex-start',
   },
   modelChip: {
     flexDirection: 'row',

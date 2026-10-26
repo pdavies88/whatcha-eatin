@@ -21,10 +21,12 @@ export default function SettingsScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView edges={['top']} style={styles.container}>
+      <SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
         <KeyboardAwareScrollView
           contentContainerStyle={styles.content}>
-          <ThemedText type="subtitle">Settings</ThemedText>
+          <ThemedText type="subtitle" accessibilityRole="header">
+            Settings
+          </ThemedText>
 
           <Section title="AI provider">
             {PROVIDER_IDS.map((id) => (
@@ -104,7 +106,10 @@ function ProviderSettings({ providerId }: { providerId: ProviderId }) {
     ? models
     : [{ id: selectedModel, label: selectedModel }, ...models];
 
-  const inputStyle = [styles.input, { color: theme.text, backgroundColor: theme.backgroundElement }];
+  const inputStyle = [
+    styles.input,
+    { color: theme.text, backgroundColor: theme.backgroundElement, borderColor: theme.inputBorder },
+  ];
 
   return (
     <>
@@ -148,14 +153,21 @@ function ProviderSettings({ providerId }: { providerId: ProviderId }) {
           </View>
           {providerId === 'gemini' ? (
             <Link href="/gemini-key" asChild>
-              <Pressable accessibilityRole="link">
+              <Pressable
+                accessibilityRole="link"
+                accessibilityLabel="How to get a free Gemini key"
+                style={styles.textButton}>
                 <ThemedText type="small" style={{ color: theme.tint }}>
                   How to get a free Gemini key →
                 </ThemedText>
               </Pressable>
             </Link>
           ) : provider.keyUrl ? (
-            <Pressable accessibilityRole="link" onPress={() => WebBrowser.openBrowserAsync(provider.keyUrl!)}>
+            <Pressable
+              accessibilityRole="link"
+              accessibilityLabel={`Get a ${provider.name} API key`}
+              onPress={() => WebBrowser.openBrowserAsync(provider.keyUrl!)}
+              style={styles.textButton}>
               <ThemedText type="small" style={{ color: theme.tint }}>
                 Get a {provider.name} API key →
               </ThemedText>
@@ -220,7 +232,7 @@ function AboutSection() {
 
 function LinkRow({ title, subtitle, onPress }: { title: string; subtitle?: string; onPress: () => void }) {
   return (
-    <Pressable accessibilityRole="link" onPress={onPress}>
+    <Pressable accessibilityRole="link" accessibilityLabel={subtitle ? `${title}, ${subtitle}` : title} onPress={onPress}>
       {({ pressed }) => (
         <ThemedView type="backgroundElement" style={[styles.option, { borderColor: 'transparent', opacity: pressed ? 0.7 : 1 }]}>
           <View style={styles.flex}>
@@ -241,7 +253,7 @@ function LinkRow({ title, subtitle, onPress }: { title: string; subtitle?: strin
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <View style={styles.section}>
-      <ThemedText type="smallBold" themeColor="textSecondary" style={styles.sectionTitle}>
+      <ThemedText type="smallBold" themeColor="textSecondary" style={styles.sectionTitle} accessibilityRole="header">
         {title}
       </ThemedText>
       {children}
@@ -331,6 +343,7 @@ const styles = StyleSheet.create({
   input: {
     minHeight: 48,
     borderRadius: 12,
+    borderWidth: 1,
     paddingHorizontal: Spacing.three,
     fontSize: 16,
   },
@@ -340,5 +353,10 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1,
+  },
+  textButton: {
+    minHeight: 44,
+    justifyContent: 'center',
+    alignSelf: 'flex-start',
   },
 });
