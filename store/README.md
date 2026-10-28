@@ -69,7 +69,7 @@ OPTIMIZED FOR IPHONE DUO
 Whatcha Eatin' fills both iPhone Duo displays. It adapts as you fold and unfold, in portrait or landscape, without restarting.
 
 ACCESSIBLE
-Works with VoiceOver, Dynamic Type and Reduce Motion, with high-contrast colors in light and dark mode.
+Works with VoiceOver and Dynamic Type, with high-contrast colors in light and dark mode.
 
 PRIVATE BY DESIGN
 - No sign-up and no servers
@@ -100,7 +100,6 @@ Also new:
 - A redesigned look, with a new Log tab and week view
 - Type what you ate to look it up, no photo needed
 - Better VoiceOver support, higher-contrast colors and larger tap targets
-- The hero animation stops when Reduce Motion is on
 ```
 
 ## App Privacy questionnaire

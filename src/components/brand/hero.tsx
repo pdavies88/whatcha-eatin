@@ -1,13 +1,4 @@
-import { useEffect, useState } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
-import Animated, {
-  cancelAnimation,
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, Pattern, Rect } from 'react-native-svg';
 
@@ -15,32 +6,32 @@ import { LogoMark } from '@/components/brand/logo-mark';
 import { ThemedText } from '@/components/themed-text';
 import { APP_NAME, APP_TAGLINE } from '@/constants/brand';
 import { DisplayFont, Spacing } from '@/constants/theme';
-import { useReduceMotion } from '@/hooks/use-reduce-motion';
 import { useTheme } from '@/hooks/use-theme';
 
 const HERO_HEIGHT = 260;
 /** In short windows, such as a phone in landscape, the hero gives up space to the form below it. */
 const MAX_HERO_SHARE = 0.4;
 const GRID = 22;
-const SCAN_DURATION = 3_600;
 
-/** A dark panel with a dot grid and a sweeping scan line behind the logo and wordmark. */
+/** A dark panel with a dot grid behind the logo and wordmark, edged in the brand orange. */
 export function Hero() {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const window = useWindowDimensions();
+  // The panel grows past this when its content needs more room.
   const minHeight = Math.min(HERO_HEIGHT, window.height * MAX_HERO_SHARE) + insets.top;
-  // The panel grows when its content needs more room than `minHeight`, so the scan line follows the real height.
-  const [height, setHeight] = useState(minHeight);
 
   return (
-    <View style={[styles.hero, { minHeight, backgroundColor: theme.heroBackground }]}>
+    <View
+      style={[
+        styles.hero,
+        { minHeight, backgroundColor: theme.heroBackground, borderBottomColor: theme.heroAccent },
+      ]}>
       <View
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
         accessibilityElementsHidden
-        importantForAccessibility="no-hide-descendants"
-        onLayout={(event) => setHeight(event.nativeEvent.layout.height)}>
+        importantForAccessibility="no-hide-descendants">
         <Svg width="100%" height="100%">
           <Defs>
             <Pattern id="dots" width={GRID} height={GRID} patternUnits="userSpaceOnUse">
@@ -49,7 +40,6 @@ export function Hero() {
           </Defs>
           <Rect width="100%" height="100%" fill="url(#dots)" />
         </Svg>
-        <ScanLine height={height} color={theme.heroAccent} />
       </View>
 
       <View
@@ -81,43 +71,10 @@ export function Hero() {
   );
 }
 
-function ScanLine({ height, color }: { height: number; color: string }) {
-  const reduceMotion = useReduceMotion();
-  const progress = useSharedValue(0.5);
-
-  useEffect(() => {
-    if (reduceMotion) {
-      // Park the line in the middle of the panel.
-      cancelAnimation(progress);
-      progress.value = 0.5;
-      return;
-    }
-    progress.value = 0;
-    progress.value = withRepeat(withTiming(1, { duration: SCAN_DURATION, easing: Easing.inOut(Easing.quad) }), -1, true);
-    return () => cancelAnimation(progress);
-  }, [reduceMotion, progress]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: progress.value * (height - 2) }],
-  }));
-
-  return (
-    <Animated.View
-      style={[styles.scanLine, { backgroundColor: color, boxShadow: `0 0 18px 4px ${color}66` }, animatedStyle]}
-    />
-  );
-}
-
 const styles = StyleSheet.create({
   hero: {
     overflow: 'hidden',
-  },
-  scanLine: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    height: 2,
-    opacity: 0.55,
+    borderBottomWidth: 2,
   },
   content: {
     flexGrow: 1,
