@@ -10,6 +10,11 @@ export const SettingsSchema = z.object({
   providerId: z.enum(PROVIDER_IDS),
   /** Selected model per provider, so switching providers remembers each choice. */
   models: z.partialRecord(z.enum(PROVIDER_IDS), z.string()),
+  /**
+   * Providers the user has allowed to receive their meal photos and descriptions. App Store
+   * guideline 5.1.2(i) requires explicit permission before sharing personal data with a third-party AI.
+   */
+  aiConsent: z.partialRecord(z.enum(PROVIDER_IDS), z.boolean()).default({}),
 });
 
 export type Settings = z.infer<typeof SettingsSchema>;
@@ -17,6 +22,7 @@ export type Settings = z.infer<typeof SettingsSchema>;
 export const DEFAULT_SETTINGS: Settings = {
   providerId: DEFAULT_PROVIDER_ID,
   models: {},
+  aiConsent: {},
 };
 
 export function loadSettings(): Settings {

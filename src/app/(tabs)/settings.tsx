@@ -59,7 +59,7 @@ export default function SettingsScreen() {
 
 function ProviderSettings({ providerId }: { providerId: ProviderId }) {
   const theme = useTheme();
-  const { settings, hasApiKey, selectModel, saveApiKey } = useSettings();
+  const { settings, hasApiKey, selectModel, saveApiKey, setAiConsent } = useSettings();
   const provider = PROVIDERS[providerId];
   const selectedModel = modelFor(settings, providerId);
 
@@ -174,6 +174,24 @@ function ProviderSettings({ providerId }: { providerId: ProviderId }) {
             </Pressable>
           ) : null}
         </Section>
+
+      <Section title="Sharing with AI">
+        <ThemedText type="small" themeColor="textSecondary">
+          {settings.aiConsent[providerId]
+            ? `You allowed sending the meal photos and descriptions you analyze to ${provider.name}.`
+            : `The app asks before sending any meal photo or description to ${provider.name}.`}
+        </ThemedText>
+        {settings.aiConsent[providerId] ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => setAiConsent(providerId, false)}
+            style={styles.textButton}>
+            <ThemedText type="small" style={{ color: theme.tint }}>
+              Stop sharing with {provider.name}
+            </ThemedText>
+          </Pressable>
+        ) : null}
+      </Section>
 
       <Section title="Model">
         {visibleModels.map((model) => (

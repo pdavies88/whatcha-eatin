@@ -150,4 +150,11 @@ describe('errors', () => {
     expect(errorForStatus(404, 'OpenAI').kind).toBe('bad_request');
     expect(errorForStatus(500, 'OpenAI').kind).toBe('provider');
   });
+
+  it('treats a 400 about an invalid key as a key problem, as Gemini sends it', () => {
+    const error = errorForStatus(400, 'Google Gemini', 'API key not valid. Please pass a valid API key.');
+    expect(error.kind).toBe('auth');
+    expect(error.message).toContain('rejected the API key');
+    expect(errorForStatus(400, 'Google Gemini', 'Unsupported MIME type').kind).toBe('bad_request');
+  });
 });

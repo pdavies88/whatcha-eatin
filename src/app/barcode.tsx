@@ -6,6 +6,7 @@ import {
   AccessibilityInfo,
   ActivityIndicator,
   Alert,
+  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -175,10 +176,15 @@ function Scanner({
           <View style={styles.permission}>
             <ThemedText themeColor="textSecondary" style={styles.centerText}>
               {permission && !permission.canAskAgain
-                ? 'Camera access is off. Turn it on in the Settings app, or type the barcode below.'
-                : 'Allow camera access to scan barcodes.'}
+                ? 'Camera access is off. You can turn it on in Settings, or type the barcode below.'
+                : 'The camera reads the barcode on packaged food. Next, you choose whether to give the app camera access. You can also type the barcode below.'}
             </ThemedText>
-            {permission?.canAskAgain !== false ? <Button title="Allow camera" onPress={requestPermission} /> : null}
+            {/* App Review guideline 5.1.1(iv): the button before the system prompt must not say "Allow". */}
+            {permission?.canAskAgain !== false ? (
+              <Button title="Continue" onPress={requestPermission} />
+            ) : (
+              <Button title="Open Settings" variant="secondary" onPress={() => void Linking.openSettings()} />
+            )}
           </View>
         )}
       </View>

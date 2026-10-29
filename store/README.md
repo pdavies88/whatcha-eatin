@@ -14,6 +14,7 @@ Everything App Store Connect asks for, ready to paste. Fill these in under **App
 - [ ] App Privacy questionnaire is answered. See [App Privacy](#app-privacy-questionnaire).
 - [ ] Age rating questionnaire is answered.
 - [ ] App Review notes include a working Gemini key. See [App Review information](#app-review-information).
+- [ ] The version in App Store Connect is **2.0**, matching `version` in `app.json` (2.0.0).
 - [ ] Build is selected on the version page, then **Add for Review → Submit**.
 
 ## URLs
@@ -94,11 +95,12 @@ Apple doesn't allow other companies' trademarks in keywords, so "Gemini" and "Ch
 App Store Connect shows this field only for updates. Skip it for the first release.
 
 ```
-Now optimized for iPhone Duo. Whatcha Eatin' fills the inner and outer displays, adapts as you fold and unfold, and works in landscape.
+Whatcha Eatin' 2.0 is a full redesign, now optimized for iPhone Duo. It fills the inner and outer displays, adapts as you fold and unfold, and works in landscape.
 
 Also new:
-- A redesigned look, with a new Log tab and week view
+- A new Log tab and week view
 - Type what you ate to look it up, no photo needed
+- The app now asks before sending a meal to your AI provider, and you can change this in Settings
 - Better VoiceOver support, higher-contrast colors and larger tap targets
 ```
 
@@ -156,48 +158,55 @@ Apple updated this questionnaire in 2025, so the exact wording may differ. The e
 
 Create a separate Google AI Studio project and key just for App Review, so you can delete it after approval. Paste the key where shown below, in App Store Connect only.
 
-These notes also answer the six questions in Apple's "Guideline 2.1 - Information Needed" request, which new developer accounts get. Paste the same text as your reply in App Store Connect **and** into the App Review **Notes** field. The Notes field allows 4,000 characters, and this text is about 3,990 with a key pasted in, so check the count after any edit. The privacy policy and support URLs have their own fields, so the notes leave them out.
+Paste this into the App Review **Notes** field. It opens with the fixes for the October 28, 2026 rejection, then the test steps. The six questions from Apple's earlier "Guideline 2.1 - Information Needed" request were answered in the previous submission, so these notes keep only the parts a reviewer needs now. The Notes field allows 4,000 characters, and this text is about 3,700 with a key pasted in. The privacy policy and support URLs have their own fields, so the notes leave them out.
 
 ```
-1. SCREEN RECORDING
-Attached: a recording on a physical iPhone running the latest iOS, starting from launch. It shows setting up a free AI key, analyzing a meal photo, scanning a barcode, the week view, daily targets and deleting a meal. The app has no account registration or login, no user-generated content shared with other users, and no paid content or in-app purchases.
+CHANGES IN 2.0 FOR THE OCTOBER 28 REVIEW
+- Guideline 5.1.1(iv): the barcode screen's message before the camera permission request now explains why the camera is used, and its button says "Continue" instead of "Allow". If camera access is off, the app offers an "Open Settings" button and the option to type the barcode instead.
+- Guideline 5.1.2(i): before the first meal photo or description is sent to an AI provider, the app asks "Send meals to Google Gemini?" (or the chosen provider), says what is sent and that the provider's privacy policy applies, and sends nothing unless the user taps Allow. Users can withdraw this in Settings > Sharing with AI. The privacy policy describes it.
+- The app is redesigned and supports iPhone Duo (built with the iOS 27.1 SDK).
 
-2. PURPOSE AND AUDIENCE
-Whatcha Eatin' helps adults (18+) understand what they eat, quickly: take a photo of a meal and an AI model estimates the calories, protein, carbs, fat, fiber and sugar of each food it sees, or scan the barcode of packaged food to log its label nutrition. Meals are kept for a rolling 7 days, and optional daily targets show how much to eat to lose, maintain or gain weight. Data stays on the device, with no accounts, ads, analytics or subscriptions.
+1. PURPOSE AND AUDIENCE
+Whatcha Eatin' helps adults (18+) log what they eat: type a meal or take a photo and an AI model estimates calories, protein, carbs, fat, fiber and sugar, or scan a packaged food's barcode. Meals are kept for 7 days on the device. Optional daily targets show how much to eat to lose, maintain or gain weight. No accounts, ads, analytics or subscriptions.
 
-3. SETUP AND TEST INSTRUCTIONS
-No login is needed. AI photo analysis uses the user's own AI provider key; Google provides Gemini keys for free, and the app includes a step-by-step guide. Please use this Gemini key, created for App Review:
+2. SETUP AND TEST INSTRUCTIONS
+No login is needed. AI analysis uses the user's own AI provider key; Google provides Gemini keys for free, and the app includes a guide. Please use this Gemini key, created for App Review:
 
 <PASTE GEMINI KEY HERE>
 
 a. Launch the app. On the Log tab, tap "Get a free Gemini key".
 b. Paste the key into the field at the bottom and tap Save. The app checks the key with Google and returns to the Log tab.
-c. With "Type it" selected, type a meal such as "2 scrambled eggs and toast" and tap "Look it up". Or choose "Snap it", tap "Take photo" and photograph any food. The app shows the estimated calories and macros. Tap "Save to this week".
-d. Barcode scanning needs no key: tap "Scan a barcode" and scan any packaged food, or type 028400090858 (Lay's Classic Potato Chips) and tap "Look up". Tap "Save to this week".
-e. Open the Week tab to see the 7-day calendar and today's meals. Tap a meal, then "Delete meal" to remove it.
-f. On the Week tab, tap "Add your details" and enter any adult age, height and weight to see daily calorie and macro targets.
-g. Settings lets users choose an AI provider and model. Settings > About links to the privacy policy and support.
-No sample files are needed.
+c. With "Type it" selected, type a meal such as "2 scrambled eggs and toast" and tap "Look it up". When asked "Send meals to Google Gemini?", tap Allow. Or choose "Snap it" and tap "Take photo". The app shows the estimated calories and macros. Tap "Save to this week".
+d. Barcode scanning needs no key: tap "Scan a barcode", tap Continue and choose whether to allow the camera, then scan any packaged food. Or type 028400090858 (Lay's Classic Potato Chips) and tap "Look up". Tap "Save to this week".
+e. Open the Week tab to see the 7-day calendar and today's meals. Tap a meal, then "Delete meal".
+f. On the Week tab, tap "Add your details" and enter any adult age, height and weight to see daily targets.
+g. Settings: choose an AI provider and model, see or withdraw AI sharing, and open the privacy policy and support under About.
 
-4. EXTERNAL SERVICES
-- Google Gemini API (default AI provider), called directly from the device with the user's own key to analyze meal photos.
-- Optional alternative AI providers, also with the user's own key: OpenAI, Anthropic, xAI and OpenRouter.
-- Open Food Facts (open, free food database) to look up packaged foods by barcode. Only the barcode number is sent.
-- Google AI Studio website, opened in an in-app browser, where users create a free Gemini key.
-The app has no backend server, authentication service, payment processor, analytics or advertising SDK.
+3. EXTERNAL SERVICES
+- Google Gemini API (default) and, optionally, OpenAI, Anthropic, xAI or OpenRouter, called from the device with the user's own key, only after the user allows it.
+- Open Food Facts, a free food database, for barcode lookups. Only the barcode number is sent.
+- Google AI Studio, opened in an in-app browser, where users create a free Gemini key.
+There is no backend server, authentication, payment, analytics or advertising SDK.
 
-5. REGIONAL DIFFERENCES
-The app works the same in every region. All features are available everywhere, and users can choose US or metric units. The only difference is outside the app: each AI provider decides which countries its API serves, so if one provider is unavailable in a user's country, they can choose another provider in Settings.
+4. REGIONAL DIFFERENCES
+None. All features work in every region, with US or metric units. If an AI provider's API isn't offered in a country, the user can choose another provider.
 
-6. REGULATED INDUSTRY AND THIRD-PARTY MATERIAL
-The app is not a medical device and does not diagnose, treat or manage any medical condition. It gives general wellness nutrition estimates for adults, says in the app that estimates are not medical advice, and advises people with medical conditions, or who are pregnant, to consult a doctor. Daily targets use the published Mifflin-St Jeor equation with safe minimum calorie levels, are not shown to users under 18, and include no weight-loss target for users with a BMI under 18.5.
-No protected third-party material is used. Barcode product data and photos come from Open Food Facts under the Open Database License and CC BY-SA, and are credited in the app. Food photos in the App Store screenshots are from Unsplash under the Unsplash License.
-
-7. IPHONE DUO
-Built with the iOS 27.1 SDK and optimized for iPhone Duo. The app adapts to the outer and inner displays, folded or unfolded, in portrait and landscape.
+5. HEALTH AND THIRD-PARTY MATERIAL
+The app is not a medical device and does not diagnose or treat any condition. It shows general nutrition estimates, says they are not medical advice, and advises people with medical conditions, or who are pregnant, to consult a doctor. Daily targets use the published Mifflin-St Jeor equation with safe minimum calorie levels, are not shown to users under 18, and include no weight-loss target for a BMI under 18.5.
+Barcode data and photos come from Open Food Facts (Open Database License, CC BY-SA) and are credited in the app. Screenshot food photos are from Unsplash under the Unsplash License.
 ```
 
 Gemini's free tier allows a limited number of requests per day. Leave the key active until the review is approved. Then delete it in Google AI Studio.
+
+### Reply to the October 28, 2026 rejection
+
+Apple rejected version 1.1 (3) under guideline 5.1.1(iv), because the barcode screen showed a custom message with an "Allow" button before the camera permission request. Reply to the message in App Store Connect with this text, then submit 2.0:
+
+```
+Thank you for the review. In version 2.0, the message before the camera permission request explains that the camera reads barcodes, and its button now says "Continue" instead of "Allow". If camera access is off, the app shows an "Open Settings" button, and users can type the barcode instead.
+
+We also reviewed guideline 5.1.2(i): the app now asks for explicit permission, naming the AI provider, before any meal photo or description is sent to it. Users can withdraw this in Settings > Sharing with AI, and the privacy policy describes it.
+```
 
 ### Screen recording for App Review
 
@@ -208,9 +217,9 @@ Apple asks for a recording on a physical iPhone running the latest iOS, starting
 3. Record this flow, slowly, in about 2–3 minutes:
    1. On the Home Screen, tap the app icon.
    2. Log tab: tap **Get a free Gemini key**, scroll the guide, paste the review key and tap **Save**. Don't open Google AI Studio on camera, because it shows your account.
-   3. With **Type it** selected, type a meal and tap **Look it up**. Wait for the result, then tap **Save to this week**.
+   3. With **Type it** selected, type a meal and tap **Look it up**. When the app asks to send meals to Google Gemini, tap **Allow**. Wait for the result, then tap **Save to this week**.
    4. Choose **Snap it**, tap **Take photo** and photograph real food. Wait for the result, then tap **Save to this week**.
-   5. Tap **Scan a barcode** and scan a packaged food. Change the servings, then tap **Save to this week**.
+   5. Tap **Scan a barcode**, tap **Continue**, allow the camera, then scan a packaged food. Change the servings, then tap **Save to this week**.
    6. Week tab: show the calendar and today's meals. Tap a meal, scroll it, then tap **Delete meal** and confirm.
    7. Tap **Add your details**, fill in the form and **Save** to show the daily targets.
    8. Settings: show the providers and models, then **About → Privacy policy**.

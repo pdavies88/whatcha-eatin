@@ -22,15 +22,20 @@ type SettingsContextValue = {
   selectProvider: (providerId: ProviderId) => void;
   selectModel: (providerId: ProviderId, model: string) => void;
   saveApiKey: (providerId: ProviderId, key: string) => Promise<void>;
+  /** Records whether the user allows meals to be sent to this provider. */
+  setAiConsent: (providerId: ProviderId, allowed: boolean) => void;
 };
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 
-export function modelFor(settings: Settings, providerId: ProviderId): string {
+export function modelFor(settings: Pick<Settings, 'models'>, providerId: ProviderId): string {
   return settings.models[providerId] ?? PROVIDERS[providerId].defaultModel;
 }
 
-export function resolveActiveModel(settings: Settings, hasApiKey: ApiKeyState): ActiveModel | null {
+export function resolveActiveModel(
+  settings: Pick<Settings, 'providerId' | 'models'>,
+  hasApiKey: ApiKeyState,
+): ActiveModel | null {
   if (!hasApiKey[settings.providerId]) return null;
   return { providerId: settings.providerId, model: modelFor(settings, settings.providerId) };
 }
@@ -78,6 +83,11 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       await persistApiKey(providerId, key);
       setHasApiKey((previous) => ({ ...previous, [providerId]: key.trim().length > 0 }));
     },
+    setAiConsent: (providerId, allowed) =>
+      updateSettings((previous) => ({
+        ...previous,
+        aiConsent: { ...previous.aiConsent, [providerId]: allowed },
+      })),
   };
 
   return <SettingsContext value={value}>{children}</SettingsContext>;

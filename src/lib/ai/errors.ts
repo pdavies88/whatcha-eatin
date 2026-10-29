@@ -23,9 +23,13 @@ export function providerErrorMessage(body: unknown): string | undefined {
   return undefined;
 }
 
+/** Gemini answers a bad key with 400 rather than 401, so the message is the only reliable signal. */
+const INVALID_KEY_MESSAGE = /api key (is )?(not valid|invalid)|invalid api key/i;
+
 export function errorForStatus(status: number, providerName: string, detail?: string): AnalysisError {
   const suffix = detail ? `\n\n${detail}` : '';
-  if (status === 401 || status === 403) {
+  const badKey = status === 400 && detail !== undefined && INVALID_KEY_MESSAGE.test(detail);
+  if (status === 401 || status === 403 || badKey) {
     return new AnalysisError('auth', `${providerName} rejected the API key. Check it in Settings.${suffix}`, status);
   }
   if (status === 429) {

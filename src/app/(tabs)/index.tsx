@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   Keyboard,
+  Linking,
   Pressable,
   StyleSheet,
   TextInput,
@@ -26,6 +27,7 @@ import { APP_NAME } from '@/constants/brand';
 import { BottomTabInset, DisplayFont, MaxContentWidth, MaxPhotoShare, Spacing } from '@/constants/theme';
 import { useMealHistory } from '@/context/meal-history-context';
 import { useSettings } from '@/context/settings-context';
+import { useAiConsent } from '@/hooks/use-ai-consent';
 import { useFoodAnalysis, type FoodInput, type PickedPhoto } from '@/hooks/use-food-analysis';
 import { useTheme } from '@/hooks/use-theme';
 import { PROVIDERS } from '@/lib/ai/providers';
@@ -43,6 +45,7 @@ export default function ScanScreen() {
   const { activeModel, keysLoaded } = useSettings();
   const { addMeal } = useMealHistory();
   const { state, analyze, reset } = useFoodAnalysis();
+  const askToShare = useAiConsent();
   const [mode, setMode] = useState<LogMode>('type');
   const [description, setDescription] = useState('');
   const [photoNotes, setPhotoNotes] = useState('');
@@ -69,10 +72,11 @@ export default function ScanScreen() {
     void analyze({ kind: 'photo', photo }, analysisContext());
   };
 
-  const lookUpText = () => {
+  const lookUpText = async () => {
     const typed = description.trim();
     if (!typed) return;
     Keyboard.dismiss();
+    if (!(await askToShare())) return;
     void analyze({ kind: 'text', description: typed });
   };
 
@@ -82,9 +86,18 @@ export default function ScanScreen() {
   const clearLabelPrompt = () => router.setParams({ labelFor: undefined });
 
   const takePhoto = async () => {
+    // Ask before the photo exists, so nobody takes a picture that then can't be analyzed.
+    if (!(await askToShare())) return;
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert('Camera access needed', 'Allow camera access in Settings to photograph your food.');
+      Alert.alert(
+        'Camera access is off',
+        'To photograph your food, turn on camera access in Settings. You can also type what you ate.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Open Settings', onPress: () => void Linking.openSettings() },
+        ],
+      );
       return;
     }
     Keyboard.dismiss();
