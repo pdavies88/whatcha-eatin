@@ -86,8 +86,9 @@ export default function ScanScreen() {
   const clearLabelPrompt = () => router.setParams({ labelFor: undefined });
 
   const takePhoto = async () => {
-    // Ask before the photo exists, so nobody takes a picture that then can't be analyzed.
-    if (!(await askToShare())) return;
+    // The system camera prompt comes first, with no message of ours in front of it (App Review
+    // guideline 5.1.1(iv)). The AI sharing question follows, before the photo is taken, so nobody
+    // takes a picture that then can't be analyzed.
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) {
       Alert.alert(
@@ -100,6 +101,7 @@ export default function ScanScreen() {
       );
       return;
     }
+    if (!(await askToShare())) return;
     Keyboard.dismiss();
     try {
       handlePicked(await ImagePicker.launchCameraAsync(PICKER_OPTIONS));

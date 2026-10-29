@@ -162,7 +162,7 @@ Paste this into the App Review **Notes** field. It opens with the fixes for the 
 
 ```
 CHANGES IN 2.0 FOR THE OCTOBER 28 REVIEW
-- Guideline 5.1.1(iv): the barcode screen's message before the camera permission request now explains why the camera is used, and its button says "Continue" instead of "Allow". If camera access is off, the app offers an "Open Settings" button and the option to type the barcode instead.
+- Guideline 5.1.1(iv): the barcode screen's message before the camera permission request now explains why the camera is used, and its button says "Continue" instead of "Allow". Taking a meal photo shows the system camera request directly, with no message before it. If camera access is off, the app offers "Open Settings" and lets users type the barcode or meal instead.
 - Guideline 5.1.2(i): before the first meal photo or description is sent to an AI provider, the app asks "Send meals to Google Gemini?" (or the chosen provider), says what is sent and that the provider's privacy policy applies, and sends nothing unless the user taps Allow. Users can withdraw this in Settings > Sharing with AI. The privacy policy describes it.
 - The app is redesigned and supports iPhone Duo (built with the iOS 27.1 SDK).
 
@@ -203,7 +203,7 @@ Gemini's free tier allows a limited number of requests per day. Leave the key ac
 Apple rejected version 1.1 (3) under guideline 5.1.1(iv), because the barcode screen showed a custom message with an "Allow" button before the camera permission request. Reply to the message in App Store Connect with this text, then submit 2.0:
 
 ```
-Thank you for the review. In version 2.0, the message before the camera permission request explains that the camera reads barcodes, and its button now says "Continue" instead of "Allow". If camera access is off, the app shows an "Open Settings" button, and users can type the barcode instead.
+Thank you for the review. In version 2.0, the barcode screen's message before the camera permission request explains that the camera reads barcodes, and its button now says "Continue" instead of "Allow". The meal photo button shows the system camera request directly, with no message before it. If camera access is off, the app shows an "Open Settings" button, and users can type the barcode or meal instead.
 
 We also reviewed guideline 5.1.2(i): the app now asks for explicit permission, naming the AI provider, before any meal photo or description is sent to it. Users can withdraw this in Settings > Sharing with AI, and the privacy policy describes it.
 ```
