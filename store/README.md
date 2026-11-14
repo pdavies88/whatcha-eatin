@@ -15,7 +15,14 @@ Everything App Store Connect asks for, ready to paste. Fill these in under **App
 - [ ] Age rating questionnaire is answered.
 - [ ] App Review notes include a working Gemini key. See [App Review information](#app-review-information).
 - [ ] The version in App Store Connect is **2.0**, matching `version` in `app.json` (2.0.0).
+- [ ] Availability is the **United States and Canada only**. See [Availability](#availability).
 - [ ] Build is selected on the version page, then **Add for Review → Submit**.
+
+## Availability
+
+The app is sold only in the **United States** and **Canada**. In App Store Connect: **Apps → Whatcha Eatin' → Pricing and Availability → App Availability**. Choose **Manage**, deselect all countries or regions, select only the United States and Canada, and save.
+
+This also keeps the app out of the China mainland storefront. Apple rejected 2.0 (8) on November 13, 2026 under guideline 5, because China requires a government license for apps that offer generative AI, and the app lets users choose OpenAI. Apps that aren't sold in China don't need to remove OpenAI.
 
 ## URLs
 
@@ -189,7 +196,7 @@ g. Settings: choose an AI provider and model, see or withdraw AI sharing, and op
 There is no backend server, authentication, payment, analytics or advertising SDK.
 
 4. REGIONAL DIFFERENCES
-None. All features work in every region, with US or metric units. If an AI provider's API isn't offered in a country, the user can choose another provider.
+The app is available only in the United States and Canada, so it is not offered on the China mainland storefront. All features work the same in both countries, with US or metric units.
 
 5. HEALTH AND THIRD-PARTY MATERIAL
 The app is not a medical device and does not diagnose or treat any condition. It shows general nutrition estimates, says they are not medical advice, and advises people with medical conditions, or who are pregnant, to consult a doctor. Daily targets use the published Mifflin-St Jeor equation with safe minimum calorie levels, are not shown to users under 18, and include no weight-loss target for a BMI under 18.5.
@@ -197,6 +204,14 @@ Barcode data and photos come from Open Food Facts (Open Database License, CC BY-
 ```
 
 Gemini's free tier allows a limited number of requests per day. Leave the key active until the review is approved. Then delete it in Google AI Studio.
+
+### Reply to the November 13, 2026 rejection
+
+Apple rejected 2.0 (8) under guideline 5 because China requires a license for generative AI apps, and the description mentions OpenAI. Change Availability to the United States and Canada first. Then reply to the message in App Store Connect with this text:
+
+```
+Thank you for the review. We have limited the app's availability to the United States and Canada in App Store Connect, so it is no longer distributed on the China mainland storefront. The app's functionality and metadata are unchanged in those two countries.
+```
 
 ### Reply to the October 28, 2026 rejection
 

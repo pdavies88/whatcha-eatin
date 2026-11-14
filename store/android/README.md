@@ -178,3 +178,5 @@ A public Production release needs one of these:
 - an organization account with a D-U-N-S number.
 
 It also needs a full store listing: a short description (80 characters), a full description, a 512 × 512 icon (`play-icon-512.png` in this folder), a 1024 × 500 feature graphic and phone screenshots.
+
+Release it only in the **United States** and **Canada**, the same as the App Store. In Play Console: **Test and release → Production → Countries / regions**. Choose **Add countries / regions**, then select only the United States and Canada. Internal testing doesn't use this setting, because testers are invited by email.
